@@ -1,22 +1,33 @@
-import { Ocupacao } from './Ocupacao';
+import { IOcupacao, IColoracao, ICaracteristica } from './Interfaces';
+import { getRandomOcupacao } from './GoblinData/Ocupacao';
+import { getRandomColoracao } from './GoblinData/Coloracao';
+import { getRandomCaracteristica } from './GoblinData/Caracteristica';
 
 export default class Goblin {
-  public ocupacao: Ocupacao;
-  public coloracao = null;
-  constructor(name?:string) {
+  public ocupacao: IOcupacao;
+  public coloracao: IColoracao;
+  public caracteristica: ICaracteristica;
+  public equipamentos: string[];
 
+  constructor(name?:string) {
+    this.ocupacao = getRandomOcupacao();
+    this.coloracao = getRandomColoracao();
+    this.caracteristica = getRandomCaracteristica();
   }
 
   get combate(): Number {
-    return 0;
+    return this.ocupacao.combate + this.coloracao.combate;
   }
+
   get conhecimento(): Number {
-    return 0;
+    return this.ocupacao.conhecimento + this.coloracao.conhecimento;
   }
-  get habilidate(): Number {
-    return 0;
+
+  get habilidade(): Number {
+    return this.ocupacao.habilidade + this.coloracao.habilidade;
   }
+
   get sorte(): Number {
-    return 0;
+    return this.ocupacao.sorte + this.coloracao.sorte;
   }
 }

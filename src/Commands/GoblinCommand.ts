@@ -1,34 +1,47 @@
-import { ICommand } from './Interfaces';
-import { Message } from 'discord.js';
-import Goblin from '../Goblin';
+import { ICommand } from "../Interfaces";
+import { Message } from "discord.js";
+import Goblin from "../Goblin";
 
 export default class GoblinCommand implements ICommand {
   process(msg: Message) {
-    if (msg.content.startsWith("~goblin help")) {
+    if (msg.content === "~goblin help") {
       msg.channel.send(this.getHelp());
       return true;
+    }
+    if (msg.content === "~goblin new") {
+      msg.channel.send(`\`\`\`md
+      #JOGADOR: ${msg.author.tag}
+      ${this.generateGoblin()}
+      \`\`\``);
     }
     return true;
   }
 
-  createGoblin(name?:string): string {
+  generateGoblin(name?: string): string {
     let goblin = new Goblin(name);
-    return `\`\`\`md
-    #JOGADOR: ${msg.author.tag}
-    #Ocupação: ${goblin.ocupation.name}
-    #Coloração: ${goblin.coloration.name}
-    #Caracteristica: ${goblin.feature}
+    return `#Ocupação: ${goblin.ocupacao.nome}
+    #Coloração: ${goblin.coloracao.nome}
+    #Caracteristica: ${goblin.caracteristica.toString()}
     ========================================
-    #Combate: ${goblin.combat}
-    #Habilidade: ${goblin.skill}
-    #Conhecimento: ${goblin.knowledge}
-    #Sorte: ${goblin.luck}\`\`\``;
+    #Habilidades:
+    ${goblin.ocupacao.habilidades
+      .map((hab, index) => `*${index + 1} - ${hab}\n`)
+      .join()}
+    ========================================
+    #Combate: ${goblin.combate}
+    #Habilidade: ${goblin.habilidade}
+    #Conhecimento: ${goblin.conhecimento}
+    #Sorte: ${goblin.sorte}
+    ========================================
+    Equipamentos():
+    ${goblin.ocupacao.equipamento.getRandomEquipamento()}
+    `;
   }
 
   getHelp(): string {
-return `\`\`\`css
+    return `\`\`\`css
 use os comandos abaixo:
 ~goblin new - Cria um novo goblin
-\`\`\``
+\`\`\``;
   }
 }

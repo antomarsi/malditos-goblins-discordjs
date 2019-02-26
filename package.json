@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@types/debug": "^4.1.2",
+    "cross-env": "^5.2.0",
     "debug": "^4.1.1",
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0"
@@ -18,7 +19,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "watch": "nodemon",
+    "watch": "cross-env DEBUG=* nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
