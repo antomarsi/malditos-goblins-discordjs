@@ -1,0 +1,34 @@
+{
+  "name": "malditos_goblins_discordjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@types/debug": "^4.1.2",
+    "debug": "^4.1.1",
+    "discord.js": "^11.4.2",
+    "dotenv": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.0",
+    "@types/node": "^11.9.5",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3333"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "watch": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antomarsi/malditos_goblins_discordjs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antomarsi/malditos_goblins_discordjs/issues"
+  },
+  "homepage": "https://github.com/antomarsi/malditos_goblins_discordjs#readme"
+}
