@@ -9,4 +9,3 @@ if (!process.env.TOKEN) {
     const bot: GoblinBot = new GoblinBot();
     bot.start(process.env.TOKEN as string);
 }
-require('http').createServer().listen(3000)
