@@ -4,23 +4,26 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@types/debug": "^4.1.2",
-    "cross-env": "^5.2.0",
     "debug": "^4.1.1",
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.2",
     "@types/dotenv": "^6.1.0",
     "@types/node": "^11.9.5",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.2",
+    "cross-env": "^5.2.0",
     "typescript": "^3.3.3333"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "watch": "cross-env DEBUG=* nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-ts": "tsc",
+    "postinstall": "npm run build-ts",
+    "start": "npm run serve",
+    "serve": "node dist/index.js",
+    "watch-node": "cross-env DEBUG=* nodemon dist/index.js",
+    "watch-ts": "cross-env DEBUG=* tsc -w"
   },
   "repository": {
     "type": "git",
