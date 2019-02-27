@@ -7,7 +7,7 @@ export default class GoblinCommand implements ICommand {
   public command: string = "general";
 
   process(msg: Message) {
-    if (msg.content.startsWith("~goblin ajuda")) {
+    if (msg.content === "~goblin ajuda" || msg.content === "~goblin") {
       msg.channel.send(this.getHelp());
       return true;
     } else if (msg.content === "~goblin novo") {
@@ -22,7 +22,8 @@ ${this.generateGoblin()}\`\`\``);
 
   generateGoblin(name?: string): string {
     let goblin = new Goblin(name);
-    return `#Ocupação: ${goblin.ocupacao.nome}
+    return `#Nome Sugerido: ${goblin.nome}
+#Ocupação: ${goblin.ocupacao.nome}
 #Coloração: ${goblin.coloracao.nome}
 #Caracteristica: ${goblin.caracteristica.toString()}
 ========================================
