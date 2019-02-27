@@ -37,7 +37,7 @@ export class Anomalia implements ICaracteristica {
   nome = "Anomalia";
   descricao = "Você possui uma anomalia genética.";
 
-  anomalies: [
+  anomalies: string[] = [
     "Manchas Rosas",
     "Manchas Rosas",
     "Orelhas no sovaco",

@@ -1,12 +1,7 @@
 import { Client, Message } from "discord.js";
 import GoblinCommand from "./Commands/GoblinCommand";
 import { ICommand } from "./Interfaces";
-import * as debug from "debug";
-
-const logSystem = debug("bot:system");
-const logEvent = debug("bot:event");
-const logError = debug("bot:error");
-const logWarn = debug("bot:warn");
+import { logEvent, logError, logWarn } from './log';
 
 export class GoblinBot {
   private client: Client = new Client();
@@ -21,12 +16,16 @@ export class GoblinBot {
       this.botId = this.client.user.id;
       logEvent(`Bot Connected.`);
       logEvent(`Logged in as ${this.client.user.tag}`);
-      this.client.user.setActivity("Use ~goblin help");
+      this.client.user.setActivity("Use ~goblin ajuda");
+      this.loadCommands();
     });
 
     this.client.on("message", msg => {
       if (msg.content.startsWith(this.prefix)) {
-        this.commands.forEach(command => command.process(msg));
+        logEvent(`Command Accepted: ${msg.content}`);
+        this.commands.forEach(command => {
+          return command.process(msg)
+        });
       }
     });
 

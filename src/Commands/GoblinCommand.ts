@@ -1,47 +1,51 @@
 import { ICommand } from "../Interfaces";
 import { Message } from "discord.js";
 import Goblin from "../Goblin";
+import { logSystem } from "../log";
 
 export default class GoblinCommand implements ICommand {
+  public command: string = "general";
+
   process(msg: Message) {
-    if (msg.content === "~goblin help") {
+    if (msg.content.startsWith("~goblin ajuda")) {
       msg.channel.send(this.getHelp());
       return true;
+    } else if (msg.content === "~goblin novo") {
+      msg.channel.send(`<@${msg.author.id}> criou uma nova *Coisinha Verde©* (ou de outra cor)\`\`\`md
+${this.generateGoblin()}\`\`\``);
+      return true;
+    } else if (msg.content === "~goblin saiba-mais") {
+      msg.author.send("Você é bem bacana em querer saber mais sobre o criador de Malditos Goblins =D\nAqui está o site: http://www.coisinhaverde.com.br/");
     }
-    if (msg.content === "~goblin new") {
-      msg.channel.send(`\`\`\`md
-      #JOGADOR: ${msg.author.tag}
-      ${this.generateGoblin()}
-      \`\`\``);
-    }
-    return true;
+    return false;
   }
 
   generateGoblin(name?: string): string {
     let goblin = new Goblin(name);
     return `#Ocupação: ${goblin.ocupacao.nome}
-    #Coloração: ${goblin.coloracao.nome}
-    #Caracteristica: ${goblin.caracteristica.toString()}
-    ========================================
-    #Habilidades:
-    ${goblin.ocupacao.habilidades
-      .map((hab, index) => `*${index + 1} - ${hab}\n`)
-      .join()}
-    ========================================
-    #Combate: ${goblin.combate}
-    #Habilidade: ${goblin.habilidade}
-    #Conhecimento: ${goblin.conhecimento}
-    #Sorte: ${goblin.sorte}
-    ========================================
-    Equipamentos():
-    ${goblin.ocupacao.equipamento.getRandomEquipamento()}
-    `;
+#Coloração: ${goblin.coloracao.nome}
+#Caracteristica: ${goblin.caracteristica.toString()}
+========================================
+#Habilidades:
+${goblin.ocupacao.habilidades
+  .map((hab, index) => ` - Level ${index + 1} - ${hab.nome}: ${hab.descricao}`)
+  .join("\n")}
+========================================
+#Combate: ${goblin.combate}
+#Habilidade: ${goblin.habilidade}
+#Conhecimento: ${goblin.conhecimento}
+#Sorte: ${goblin.sorte}
+========================================
+#Equipamentos:
+ - ${goblin.ocupacao.equipamento}`;
   }
 
   getHelp(): string {
     return `\`\`\`css
-use os comandos abaixo:
-~goblin new - Cria um novo goblin
+Use os comandos abaixo:
+~goblin ajuda - Mostra a lista de comandos
+~goblin novo - Cria um novo goblin
+~goblin saiba-mais - Envia em privado o link para o site do CoisinhaVerde =D
 \`\`\``;
   }
 }

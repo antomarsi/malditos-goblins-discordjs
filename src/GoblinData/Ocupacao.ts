@@ -1,101 +1,104 @@
 import { IOcupacao } from "../Interfaces";
-import { EquipamentoLeve, EquipamentoPesado, EquipamentoMagico, EquipamentoExposivo } from './Equipamento';
-import {
-  MestreDeArmas,
-  AtaqueBrutal,
-  AtaqueFatal,
-  Rastrear,
-  MiraCerteira,
-  TiroFatal,
-  Resistencia,
-  SuicidioExplosivo,
-  Imunidade,
-  Roubar,
-  ArmarArmadilhas,
-  AtaqueFurtivo,
-  GritoDeGuerra,
-  RaioDeEnergia,
-  Cura,
-  Petrificar
-} from "./Habilidades";
+import { EquipType, Equipamentos } from './Equipamento';
+import { Habilidades } from "./Habilidades";
 
-export class Mercenario implements IOcupacao {
+const getRandomEquipamento = (equipType: number): string =>  {
+  let equips: string[] = Equipamentos[equipType];
+  return equips[
+    Math.floor(Math.random() * equips.length)
+  ];
+}
+
+class Ocupacao implements IOcupacao {
+  nome = "";
+  combate = 0;
+  conhecimento = 0;
+  habilidade = 0;
+  sorte = 0;
+  habilidades: any[] = [];
+  equipType = EquipType.Pesado;
+  get equipamento(): string {
+    return getRandomEquipamento(this.equipType);
+  }
+}
+
+export class Mercenario extends Ocupacao {
   nome = "Mercenário";
   combate = 1;
   conhecimento = 0;
   habilidade = 1;
   sorte = 0;
   habilidades = [
-    MestreDeArmas.toString(),
-    AtaqueBrutal.toString(),
-    AtaqueFatal.toString()
+    Habilidades["MestreDeArmas"],
+    Habilidades["AtaqueBrutal"],
+    Habilidades["AtaqueFatal"]
   ];
-  equipamento = new EquipamentoPesado();
+  equipType =EquipType.Pesado;
 }
-export class Cacador implements IOcupacao {
+export class Cacador extends Ocupacao {
   nome = "Caçador";
   combate = 1;
   conhecimento = 0;
   habilidade = 0;
   sorte = 1;
   habilidades = [
-    Rastrear.toString(),
-    MiraCerteira.toString(),
-    TiroFatal.toString()
+    Habilidades["Rastrear"],
+    Habilidades["MiraCerteira"],
+    Habilidades["TiroFatal"]
   ];
-  equipamento = new EquipamentoLeve();
+  equipType =EquipType.Leve;
 }
-export class Piromaniaco implements IOcupacao {
+export class Piromaniaco extends Ocupacao {
   nome = "Piromaníaco";
   combate = 0;
   conhecimento = 0;
   habilidade = 1;
   sorte = 1;
   habilidades = [
-    Resistencia.toString(),
-    SuicidioExplosivo.toString(),
-    Imunidade.toString()
+    Habilidades["Resistencia"],
+    Habilidades["SuicidioExplosivo"],
+    Habilidades["Imunidade"]
   ];
-  equipamento = new EquipamentoExposivo();
+  equipType =EquipType.Exposivo;
 }
-export class Gatuno implements IOcupacao {
+export class Gatuno extends Ocupacao {
   nome = "Gatuno";
   combate = 0;
   conhecimento = 1;
   habilidade = 1;
   sorte = 0;
   habilidades = [
-    Roubar.toString(),
-    ArmarArmadilhas.toString(),
-    AtaqueFurtivo.toString()
+    Habilidades["Roubar"],
+    Habilidades["ArmarArmadilhas"],
+    Habilidades["AtaqueFurtivo"]
   ];
-  equipamento = new EquipamentoLeve();
+  equipType =EquipType.Leve;
 }
-export class Lider implements IOcupacao {
+export class Lider extends Ocupacao {
   nome = "Líder";
   combate = 1;
   conhecimento = 1;
   habilidade = 0;
   sorte = 0;
   habilidades = [
-    GritoDeGuerra.toString(),
-    AtaqueBrutal.toString(),
-    AtaqueFatal.toString()
+    Habilidades["GritoDeGuerra"],
+    Habilidades["AtaqueBrutal"],
+    Habilidades["AtaqueFatal"]
   ];
-  equipamento = new EquipamentoPesado();
+  equipType =EquipType.Pesado;
 }
-export class Xama implements IOcupacao {
+export class Xama extends Ocupacao {
   nome = "Xamã";
   combate = 1;
   conhecimento = 1;
   habilidade = 0;
   sorte = 1;
   habilidades = [
-    RaioDeEnergia.toString(),
-    Cura.toString(),
-    Petrificar.toString()
+    Habilidades["RaioDeEnergia"],
+    Habilidades["Cura"],
+    Habilidades["Petrificar"]
   ];
-  equipamento = new EquipamentoMagico();
+  equipType =EquipType.Magico;
 }
 
 export function getRandomOcupacao(): IOcupacao {

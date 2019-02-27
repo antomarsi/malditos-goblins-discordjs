@@ -1,10 +1,10 @@
 import { GoblinBot } from "./GoblinBot";
 import * as dotenv from "dotenv";
-import * as debug from "debug";
+import { logError } from "./log";
 
 dotenv.config();
 if (!process.env.TOKEN) {
-    debug("bot:error")("TOKEN não informado!");
+    logError("TOKEN não informado!");
 } else {
     const bot: GoblinBot = new GoblinBot();
     bot.start(process.env.TOKEN as string);

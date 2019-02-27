@@ -11,8 +11,8 @@ export interface IOcupacao {
   conhecimento: number;
   habilidade: number;
   sorte: number;
-  habilidades: string[];
-  equipamento: IEquipamentos;
+  habilidades: any[];
+  equipamento: string;
 }
 
 export interface IColoracao {
@@ -26,13 +26,6 @@ export interface IColoracao {
 export interface ICaracteristica {
   nome: string;
   descricao: string;
-  toString(): string;
-}
-
-export interface IHabilidade {
-  nome: string;
-  descricao: string;
-
   toString(): string;
 }
 
