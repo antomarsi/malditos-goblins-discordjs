@@ -18,6 +18,7 @@ export class GoblinBot {
       logEvent(`Logged in as ${this.client.user.tag}`);
       this.client.user.setActivity("Use ~goblin ajuda");
       this.loadCommands();
+      console.log("Bot Connected.");
     });
 
     this.client.on("message", msg => {
