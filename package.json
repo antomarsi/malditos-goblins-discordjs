@@ -12,15 +12,16 @@
     "@types/debug": "^4.1.2",
     "@types/dotenv": "^6.1.0",
     "@types/node": "^11.9.5",
+    "cross-env": "^5.2.0",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.2",
-    "cross-env": "^5.2.0",
+    "tslint": "^5.19.0",
     "typescript": "^3.3.3333"
   },
   "scripts": {
     "build-ts": "tsc",
     "postinstall": "npm run build-ts",
-    "start": "npm run serve",
+    "start": "serve",
     "serve": "node dist/index.js",
     "watch-node": "cross-env DEBUG=* nodemon dist/index.js",
     "watch-ts": "cross-env DEBUG=* tsc -w"

@@ -1,13 +1,20 @@
-import { IOcupacao } from "../Interfaces";
-import { EquipType, Equipamentos } from './Equipamento';
+import { EquipType, Equipamentos } from "./Equipamento";
 import { Habilidades } from "./Habilidades";
 
-const getRandomEquipamento = (equipType: number): string =>  {
-  let equips: string[] = Equipamentos[equipType];
-  return equips[
-    Math.floor(Math.random() * equips.length)
-  ];
+export interface IOcupacao {
+  nome: string;
+  combate: number;
+  conhecimento: number;
+  habilidade: number;
+  sorte: number;
+  habilidades: any[];
+  equipamento: string;
 }
+
+const getRandomEquipamento = (equipType: number): string => {
+  let equips: string[] = Equipamentos[equipType];
+  return equips[Math.floor(Math.random() * equips.length)];
+};
 
 class Ocupacao implements IOcupacao {
   nome = "";
@@ -33,7 +40,7 @@ export class Mercenario extends Ocupacao {
     Habilidades["AtaqueBrutal"],
     Habilidades["AtaqueFatal"]
   ];
-  equipType =EquipType.Pesado;
+  equipType = EquipType.Pesado;
 }
 export class Cacador extends Ocupacao {
   nome = "Caçador";
@@ -46,7 +53,7 @@ export class Cacador extends Ocupacao {
     Habilidades["MiraCerteira"],
     Habilidades["TiroFatal"]
   ];
-  equipType =EquipType.Leve;
+  equipType = EquipType.Leve;
 }
 export class Piromaniaco extends Ocupacao {
   nome = "Piromaníaco";
@@ -59,7 +66,7 @@ export class Piromaniaco extends Ocupacao {
     Habilidades["SuicidioExplosivo"],
     Habilidades["Imunidade"]
   ];
-  equipType =EquipType.Exposivo;
+  equipType = EquipType.Exposivo;
 }
 export class Gatuno extends Ocupacao {
   nome = "Gatuno";
@@ -72,7 +79,7 @@ export class Gatuno extends Ocupacao {
     Habilidades["ArmarArmadilhas"],
     Habilidades["AtaqueFurtivo"]
   ];
-  equipType =EquipType.Leve;
+  equipType = EquipType.Leve;
 }
 export class Lider extends Ocupacao {
   nome = "Líder";
@@ -85,7 +92,7 @@ export class Lider extends Ocupacao {
     Habilidades["AtaqueBrutal"],
     Habilidades["AtaqueFatal"]
   ];
-  equipType =EquipType.Pesado;
+  equipType = EquipType.Pesado;
 }
 export class Xama extends Ocupacao {
   nome = "Xamã";
@@ -98,7 +105,7 @@ export class Xama extends Ocupacao {
     Habilidades["Cura"],
     Habilidades["Petrificar"]
   ];
-  equipType =EquipType.Magico;
+  equipType = EquipType.Magico;
 }
 
 export function getRandomOcupacao(): IOcupacao {

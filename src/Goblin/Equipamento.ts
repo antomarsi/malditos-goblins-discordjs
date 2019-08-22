@@ -1,3 +1,8 @@
+export interface IEquipamentos {
+  equipamentos: string[];
+  getRandomEquipamento(): string;
+}
+
 export const EquipType = {
   Leve: 0,
   Pesado: 1,

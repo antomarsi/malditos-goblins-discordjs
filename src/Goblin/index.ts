@@ -1,7 +1,6 @@
-import { IOcupacao, IColoracao, ICaracteristica } from "./Interfaces";
-import { getRandomOcupacao } from "./GoblinData/Ocupacao";
-import { getRandomColoracao } from "./GoblinData/Coloracao";
-import { getRandomCaracteristica } from "./GoblinData/Caracteristica";
+import { getRandomOcupacao, IOcupacao } from "./Ocupacao";
+import { getRandomColoracao, IColoracao } from "./Coloracao";
+import { getRandomCaracteristica, ICaracteristica } from "./Caracteristica";
 
 export default class Goblin {
   public ocupacao: IOcupacao;

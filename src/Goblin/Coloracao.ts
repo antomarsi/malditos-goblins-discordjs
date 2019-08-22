@@ -1,4 +1,10 @@
-import { IColoracao } from "../Interfaces";
+export interface IColoracao {
+  nome: string;
+  combate: number;
+  conhecimento: number;
+  habilidade: number;
+  sorte: number;
+}
 
 export class VerdeClaro implements IColoracao {
   nome = "Verde Claro";

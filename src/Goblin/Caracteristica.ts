@@ -1,4 +1,9 @@
-import { ICaracteristica } from "../Interfaces";
+export interface ICaracteristica {
+  nome: string;
+  descricao: string;
+  toString(): string;
+}
+
 
 abstract class Caracteristica implements ICaracteristica {
   nome = "";

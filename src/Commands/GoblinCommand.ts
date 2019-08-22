@@ -1,7 +1,6 @@
-import { ICommand } from "../Interfaces";
 import { Message } from "discord.js";
 import Goblin from "../Goblin";
-import { logSystem } from "../log";
+import { ICommand } from "./index";
 
 export default class GoblinCommand implements ICommand {
   public command: string = "general";
@@ -11,34 +10,41 @@ export default class GoblinCommand implements ICommand {
       msg.channel.send(this.getHelp());
       return true;
     } else if (msg.content === "~goblin novo") {
-      msg.channel.send(`<@${msg.author.id}> criou uma nova *Coisinha Verde©* (ou de outra cor)\`\`\`md
+      msg.channel.send(`<@${
+        msg.author.id
+      }> criou uma nova *Coisinha Verde©* (ou de outra cor)\`\`\`md
 ${this.generateGoblin()}\`\`\``);
       return true;
     } else if (msg.content === "~goblin saiba-mais") {
-      msg.author.send("Você é bem bacana em querer saber mais sobre o criador de Malditos Goblins =D\nAqui está o site: http://www.coisinhaverde.com.br/");
+      msg.author.send(
+        "Você é bem bacana em querer saber mais sobre o criador de Malditos Goblins =D\nAqui está o site: http://www.coisinhaverde.com.br/"
+      );
+      return true
     }
     return false;
   }
 
   generateGoblin(name?: string): string {
     let goblin = new Goblin(name);
-    return `#Nome Sugerido: ${goblin.nome}
-#Ocupação: ${goblin.ocupacao.nome}
-#Coloração: ${goblin.coloracao.nome}
-#Caracteristica: ${goblin.caracteristica.toString()}
-========================================
-#Habilidades:
-${goblin.ocupacao.habilidades
-  .map((hab, index) => ` - Level ${index + 1} - ${hab.nome}: ${hab.descricao}`)
-  .join("\n")}
-========================================
-#Combate: ${goblin.combate}
-#Habilidade: ${goblin.habilidade}
-#Conhecimento: ${goblin.conhecimento}
-#Sorte: ${goblin.sorte}
-========================================
-#Equipamentos:
- - ${goblin.ocupacao.equipamento}`;
+    let text: string[] = [];
+    text.push(`#Nome Sugerido: ${goblin.nome}`);
+    text.push(`#Ocupação: ${goblin.ocupacao.nome}`);
+    text.push(`#Coloração: ${goblin.coloracao.nome}`);
+    text.push(`#Caracteristica: ${goblin.caracteristica.toString()}`);
+    text.push("========================================");
+    text.push("#Habilidades:");
+    goblin.ocupacao.habilidades.forEach((hab, index) => {
+      text.push(` - Level ${index + 1} - ${hab.nome}: ${hab.descricao}`);
+    });
+    text.push("========================================");
+    text.push(`#Combate: ${goblin.combate}`);
+    text.push(`#Habilidade: ${goblin.habilidade}`);
+    text.push(`#Conhecimento: ${goblin.conhecimento}`);
+    text.push(`#Sorte: ${goblin.sorte}`);
+    text.push(`========================================`);
+    text.push(`#Equipamentos:`);
+    text.push(`- ${goblin.ocupacao.equipamento}`);
+    return text.join("\n");
   }
 
   getHelp(): string {
