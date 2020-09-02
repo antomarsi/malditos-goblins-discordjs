@@ -51,7 +51,7 @@ export default class GoblinCommand implements ICommand {
       .setTitle('Ajuda')
       .setDescription('Use os comandos abaixo:')
       .addFields(
-        { name: '~goblin novo', value: 'Mostra a lista de comandos' },
+        { name: '~goblin ajuda', value: 'Mostra a lista de comandos' },
         { name: '~goblin novo', value: 'Cria um novo goblin' },
         {
           name: '~goblin saiba-mais',
