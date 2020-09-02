@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Habilidades = void 0;
 exports.Habilidades = {
     MestreDeArmas: {
         nome: "Mestre de Armas",

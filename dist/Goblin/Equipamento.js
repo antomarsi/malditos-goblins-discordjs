@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Equipamentos = exports.EquipType = void 0;
 exports.EquipType = {
     Leve: 0,
     Pesado: 1,

@@ -1,5 +1,6 @@
 export interface IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;
@@ -7,6 +8,7 @@ export interface IColoracao {
 }
 export declare class VerdeClaro implements IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;
@@ -14,6 +16,7 @@ export declare class VerdeClaro implements IColoracao {
 }
 export declare class Verde implements IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;
@@ -21,6 +24,7 @@ export declare class Verde implements IColoracao {
 }
 export declare class VerdeEscuro implements IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;
@@ -28,6 +32,7 @@ export declare class VerdeEscuro implements IColoracao {
 }
 export declare class Amarelo implements IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;
@@ -35,6 +40,7 @@ export declare class Amarelo implements IColoracao {
 }
 export declare class Vermelho implements IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;
@@ -42,6 +48,7 @@ export declare class Vermelho implements IColoracao {
 }
 export declare class Azul implements IColoracao {
     nome: string;
+    cor: string;
     combate: number;
     conhecimento: number;
     habilidade: number;

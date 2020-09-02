@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getRandomOcupacao = exports.Xama = exports.Lider = exports.Gatuno = exports.Piromaniaco = exports.Cacador = exports.Mercenario = void 0;
 const Equipamento_1 = require("./Equipamento");
 const Habilidades_1 = require("./Habilidades");
 const getRandomEquipamento = (equipType) => {

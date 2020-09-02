@@ -1,39 +1,37 @@
 {
-  "name": "malditos_goblins_discordjs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "debug": "^4.1.1",
-    "discord.js": "^11.4.2",
-    "dotenv": "^6.2.0"
-  },
-  "devDependencies": {
-    "@types/debug": "^4.1.2",
-    "@types/dotenv": "^6.1.0",
-    "@types/node": "^11.9.5",
-    "cross-env": "^5.2.0",
-    "nodemon": "^1.18.10",
-    "ts-node": "^8.0.2",
-    "tslint": "^5.19.0",
-    "typescript": "^3.3.3333"
-  },
-  "scripts": {
-    "build-ts": "tsc",
-    "postinstall": "npm run build-ts",
-    "start": "serve",
-    "serve": "node dist/index.js",
-    "watch-node": "cross-env DEBUG=* nodemon dist/index.js",
-    "watch-ts": "cross-env DEBUG=* tsc -w"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/antomarsi/malditos_goblins_discordjs.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/antomarsi/malditos_goblins_discordjs/issues"
-  },
-  "homepage": "https://github.com/antomarsi/malditos_goblins_discordjs#readme"
+    "name": "malditos_goblins_discordjs",
+    "version": "1.1.0",
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+        "debug": "^4.1.1",
+        "discord.js": "12",
+        "dotenv": "^6.2.0"
+    },
+    "devDependencies": {
+        "@types/debug": "^4.1.2",
+        "@types/dotenv": "^6.1.0",
+        "@types/node": "^11.9.5",
+        "@types/ws": "^7.2.6",
+        "cross-env": "^5.2.0",
+        "ts-node": "^8.0.2",
+        "ts-node-dev": "^1.0.0-pre.62",
+        "tslint": "^5.19.0",
+        "typescript": "^4.0.2"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "cross-env DEBUG=* tsnd src/index.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/antomarsi/malditos_goblins_discordjs.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/antomarsi/malditos_goblins_discordjs/issues"
+    },
+    "homepage": "https://github.com/antomarsi/malditos_goblins_discordjs#readme"
 }

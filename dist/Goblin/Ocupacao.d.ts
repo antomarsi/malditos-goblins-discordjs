@@ -15,7 +15,7 @@ declare class Ocupacao implements IOcupacao {
     sorte: number;
     habilidades: any[];
     equipType: number;
-    readonly equipamento: string;
+    get equipamento(): string;
 }
 export declare class Mercenario extends Ocupacao {
     nome: string;

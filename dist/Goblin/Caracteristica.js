@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getRandomCaracteristica = exports.Anomalia = exports.FalaErrado = exports.Gordo = exports.Cicatrizes = exports.Fedorento = exports.Insano = void 0;
 class Caracteristica {
     constructor() {
         this.nome = "";

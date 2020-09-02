@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const index_1 = require("./Log/index");
 dotenv.config();
 if (!process.env.TOKEN) {
-    index_1.logError("TOKEN não informado!");
+    index_1.logError('TOKEN não informado!');
 }
 else {
     const bot = new GoblinBot_1.GoblinBot();

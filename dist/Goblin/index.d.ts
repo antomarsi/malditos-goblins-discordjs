@@ -9,8 +9,8 @@ export default class Goblin {
     nome: string;
     constructor(nome?: string);
     private generateName;
-    readonly combate: Number;
-    readonly conhecimento: Number;
-    readonly habilidade: Number;
-    readonly sorte: Number;
+    get combate(): Number;
+    get conhecimento(): Number;
+    get habilidade(): Number;
+    get sorte(): Number;
 }
