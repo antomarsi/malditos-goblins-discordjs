@@ -9,18 +9,19 @@ export default class Goblin {
   public equipamentos: string[];
   public nome: string;
 
-  constructor(nome?: string) {
-    if (nome) {
-      this.nome = nome;
-    } else {
-      this.nome = this.generateName();
-    }
-    this.ocupacao = getRandomOcupacao();
-    this.coloracao = getRandomColoracao();
-    this.caracteristica = getRandomCaracteristica();
+  constructor() {
   }
 
-  private generateName(): string {
+  public static generateGoblin(name?:string) {
+    const goblin = new Goblin();
+    goblin.nome = name || goblin.generateName();
+    goblin.ocupacao = getRandomOcupacao();
+    goblin.coloracao = getRandomColoracao();
+    goblin.caracteristica = getRandomCaracteristica();
+    return goblin
+  }
+
+  public generateName(): string {
     let prefix = ["Sp", "Cr", "Bu", "Ut", "An", "Om"];
     let sufix = ["or", "ut", "ar", "an", "an", "ec"];
     return (

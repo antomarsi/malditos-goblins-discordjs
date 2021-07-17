@@ -1,45 +1,61 @@
-import { Client } from 'discord.js'
-import GoblinCommand from './Commands/GoblinCommand'
-import { logEvent, logError, logWarn } from './Log'
-import { ICommand } from './Commands/index'
+import * as Discord from 'discord.js'
+import { Logger } from 'tslog'
+import commands, { ICommand } from './Commands'
 
 export class GoblinBot {
-  private client: Client = new Client()
+  private client: Discord.Client
   private botId: string
-  private commands: ICommand[] = []
-  private prefix: string = '~goblin'
+  private commands: Discord.Collection<string, ICommand>
+  private prefix: string = process.env.PREFIX || "~goblin"
+  private logger: Logger
 
-  constructor() {
-    logEvent('Loading commands')
+  constructor(logger?: Logger) {
+    this.client = new Discord.Client()
+    this.commands = new Discord.Collection()
+
+    this.logger = logger || new Logger({ name: 'Malditos Goblins Bot' })
     this.loadCommands()
+    this.setUpEvents()
   }
 
-  public start(token: string): void {
-    console.log('Starting bot...')
+  private loadCommands(): void {
+    commands.forEach(command => {
+      this.commands.set(command.name, command)
+    })
+  }
 
-    this.client.on('ready', () => {
+  private setUpEvents(): void {
+    this.client.on('ready', async () => {
       this.botId = this.client.user!.id
-      logEvent(`Bot Connected.`)
-      logEvent(`Logged in as ${this.client.user!.tag}`)
-      this.client.user!.setActivity('Use ~goblin ajuda')
+      this.logger.info(`Bot Connected.`)
+      this.logger.info(`Logged in as ${this.client.user!.tag}`)
+      this.client.user!.setActivity(`Use ${this.prefix} ajuda`)
       console.log('Bot Connected.')
     })
 
-    this.client.on('message', msg => {
-      if (msg.content.startsWith(this.prefix)) {
-        logEvent(`Command Accepted: ${msg.content}`)
-        this.commands.some(command => {
-          return command.process(msg)
-        })
+    this.client.on('message', async (message: Discord.Message): Promise<void> => {
+      if (!message.content.startsWith(this.prefix) || message.author.bot) return
+      const args = message.content.slice(this.prefix.length).trim().split(/ +/)
+      const command = args.shift()?.toLowerCase()
+      if (command === undefined) {
+        return
+      }
+
+      if (!this.commands.has(command)) return
+      try {
+        this.commands.get(command)?.execute(message, args)
+      } catch (err) {
+        this.logger.error(err)
+        message.reply(`Ocorreu um erro executando o comando "${command}"`)
       }
     })
 
-    this.client.on('error', logError)
+    this.client.on('error', this.logger.error)
 
-    this.client.on('warn', logWarn)
+    this.client.on('warn', this.logger.warn)
 
     process.on('exit', () => {
-      logEvent(`Bot Process exit.`)
+      this.logger.info(`Bot Process exit.`)
       this.client.destroy()
     })
 
@@ -47,13 +63,12 @@ export class GoblinBot {
       const errorMsg = (err ? err.stack || err : '')
         .toString()
         .replace(new RegExp(`${__dirname}\/`, 'g'), './')
-      logError(errorMsg)
+      this.logger.error(errorMsg)
     })
-
-    this.client.login(token)
   }
 
-  loadCommands() {
-    this.commands.push(new GoblinCommand())
+  public start(token: string): void {
+    this.logger.info('Starting bot...')
+    this.client.login(token)
   }
 }

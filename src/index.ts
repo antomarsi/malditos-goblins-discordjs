@@ -1,11 +1,14 @@
 import { GoblinBot } from './GoblinBot'
 import * as dotenv from 'dotenv'
-import { logError } from './Log/index'
+import { Logger } from 'tslog';
 
 dotenv.config()
+
+const logger =  new Logger({name: "Malditos Goblins Bot"});
+
 if (!process.env.TOKEN) {
-  logError('TOKEN não informado!')
+  logger.error("Token not informed!")
 } else {
-  const bot: GoblinBot = new GoblinBot()
+  const bot: GoblinBot = new GoblinBot(logger)
   bot.start(process.env.TOKEN as string)
 }

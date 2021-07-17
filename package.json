@@ -4,16 +4,16 @@
     "description": "",
     "main": "index.js",
     "dependencies": {
-        "debug": "^4.1.1",
-        "discord.js": "12",
-        "dotenv": "^6.2.0"
+        "discord.js": "^12.5.3",
+        "dotenv": "^6.2.0",
+        "tslog": "^3.2.0"
     },
     "devDependencies": {
-        "@types/debug": "^4.1.2",
         "@types/dotenv": "^6.1.0",
         "@types/node": "^11.9.5",
         "@types/ws": "^7.2.6",
         "cross-env": "^5.2.0",
+        "eslint": "^7.30.0",
         "ts-node": "^8.0.2",
         "ts-node-dev": "^1.0.0-pre.62",
         "tslint": "^5.19.0",
