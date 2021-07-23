@@ -6,6 +6,7 @@
     "dependencies": {
         "discord.js": "^12.5.3",
         "dotenv": "^6.2.0",
+        "malditos-goblins-lib": "^1.0.2",
         "tslog": "^3.2.0"
     },
     "devDependencies": {
