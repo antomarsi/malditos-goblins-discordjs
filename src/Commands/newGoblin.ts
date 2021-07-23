@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, User } from 'discord.js'
-import MalditosGoblins from 'malditos-goblins-lib'
+import * as MalditosGoblins from 'malditos-goblins-lib'
 import { ICommand } from './index'
 const name = 'novo'
 
