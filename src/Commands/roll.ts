@@ -1,36 +1,38 @@
-import { Message } from 'discord.js'
-import { ICommand } from './index'
-import { randomInt } from './../utils/math'
-const name = 'dado'
+import { SlashCommand, CommandOptionType, SlashCreator, CommandContext, InteractionResponseFlags } from 'slash-create';
+import { randomInt } from '../utils/math';
 
-const description = 'Rola N dados limite de 6. Use o comando: dado <N>'
-
-const execute = (msg: Message, args: string[]) => {
-  if (
-    args.length <= 0 ||
-    !Number(args[0]) ||
-    Number(args[0]) > 6 ||
-    Number(args[0]) <= 0
-  ) {
-    msg.channel.send('informe o numero de dados para rolar (limite de 6)')
-    return
+export default class HelloCommand extends SlashCommand {
+  constructor(creator: SlashCreator) {
+    super(creator, {
+      name: 'goblin-roll',
+      description: 'Rola N dados limite de 6.',
+      options: [
+        {
+          type: CommandOptionType.INTEGER,
+          name: 'quantidade',
+          description: 'Quantidade de dados',
+          max_value: 6,
+          min_value: 1,
+          required: true
+        }
+      ]
+    });
   }
-  const numeroDados = Number(args[0])
-  const dados: number[] = []
-  for (let index = 0; index < numeroDados; index++) {
-    dados.push(randomInt(1, 6))
-  }
-  const dadosString = dados.join(', ')
-  const exploded = dados.every(value => value === 1)
 
-  msg.channel.send(
-    `${msg.author} rolou ${numeroDados} dados: [${dadosString}].` +
-      (exploded
-        ? ' Todos os dados são 1, seu goblin explodiu! (em milhões de pedacinhos)'
-        : '')
-  )
+  async run(ctx: CommandContext) {
+    const dados: number[] = [];
+    const quantidade: number = ctx.options.quantidade;
+
+    for (let index = 0; index < quantidade; index++) {
+      dados.push(randomInt(1, 6));
+    }
+    const user = ctx.member?.mention ?? ctx.user.mention;
+
+    let message = `${user} rolou ${quantidade} dados, resultado: [${dados.join(', ')}].`;
+    if (dados.every((value) => value === 1)) {
+      message += '\nTodos os dados são 1, seu goblin **explodiu!** (em milhões de pedacinhos)';
+    }
+
+    await ctx.send(message);
+  }
 }
-
-const roll: ICommand = { name, description, execute }
-
-export default roll
