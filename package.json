@@ -1,7 +1,7 @@
 {
-  "name": "slash-create-template",
-  "version": "1.0.0",
-  "description": "A template for slash-create",
+  "name": "malditos_goblins_discordjs",
+  "version": "2.0.0",
+  "description": "A Malditos goblins Bot",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
