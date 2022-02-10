@@ -3,7 +3,7 @@ import { SlashCommand, SlashCreator, CommandContext } from 'slash-create';
 export default class HelloCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      name: 'goblin-sobre',
+      name: 'sobre',
       description: 'Saiba mais sobre "Malditos Goblins".'
     });
   }

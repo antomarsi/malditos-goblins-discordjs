@@ -4,7 +4,7 @@ import { randomInt } from '../utils/math';
 export default class HelloCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      name: 'goblin-roll',
+      name: 'roll',
       description: 'Rola N dados limite de 6.',
       options: [
         {
