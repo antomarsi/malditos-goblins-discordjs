@@ -1,39 +1,32 @@
 {
-    "name": "malditos_goblins_discordjs",
-    "version": "1.1.0",
-    "description": "",
-    "main": "index.js",
-    "dependencies": {
-        "discord.js": "^12.5.3",
-        "dotenv": "^6.2.0",
-        "malditos-goblins-lib": "^1.0.3",
-        "tslib": "^2.3.0",
-        "tslog": "^3.2.0"
-    },
-    "devDependencies": {
-        "@types/dotenv": "^6.1.0",
-        "@types/node": "^11.9.5",
-        "@types/ws": "^7.2.6",
-        "cross-env": "^5.2.0",
-        "eslint": "^7.30.0",
-        "ts-node": "^8.0.2",
-        "ts-node-dev": "^1.0.0-pre.62",
-        "tslint": "^5.19.0",
-        "typescript": "^4.0.2"
-    },
-    "scripts": {
-        "build": "tsc",
-        "start": "node dist/index.js",
-        "dev": "cross-env DEBUG=* tsnd src/index.ts"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/antomarsi/malditos_goblins_discordjs.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/antomarsi/malditos_goblins_discordjs/issues"
-    },
-    "homepage": "https://github.com/antomarsi/malditos_goblins_discordjs#readme"
+  "name": "malditos_goblins_discordjs",
+  "version": "2.0.0",
+  "description": "A Malditos goblins Bot",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "sync": "slash-up sync",
+    "sync:dev": "slash-up sync -e development",
+    "build": "tsc",
+    "lint": "npx eslint --ext .ts .",
+    "lint:fix": "npx eslint --ext .ts . --fix",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+  },
+  "dependencies": {
+    "slash-create": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "@vercel/node": "^1.12.1",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.3.0",
+    "prettier": "^2.2.1",
+    "slash-up": "^1.0.11",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.2.3"
+  }
 }

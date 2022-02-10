@@ -1,1 +1,1 @@
-# malditos_goblins_discordjs
+# Malditos Goblins Bot
