@@ -1,5 +1,5 @@
 import { EquipType, Equipamentos } from "./Equipamento";
-import { Habilidades } from "./Habilidades";
+import { Habilidades, HabilidadeType } from "./Habilidades";
 
 export interface IOcupacao {
   nome: string;
@@ -7,7 +7,7 @@ export interface IOcupacao {
   conhecimento: number;
   habilidade: number;
   sorte: number;
-  habilidades: any[];
+  habilidades: HabilidadeType[];
   equipamento: string;
 }
 

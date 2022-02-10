@@ -1,4 +1,4 @@
-import { SlashCommand, CommandOptionType, SlashCreator, CommandContext, InteractionResponseFlags } from 'slash-create';
+import { SlashCommand, CommandOptionType, SlashCreator, CommandContext } from 'slash-create';
 import { randomInt } from '../utils/math';
 
 export default class HelloCommand extends SlashCommand {

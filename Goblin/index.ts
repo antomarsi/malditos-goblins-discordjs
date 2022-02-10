@@ -1,23 +1,24 @@
 import { getRandomOcupacao, IOcupacao } from './Ocupacao';
 import { getRandomColoracao, IColoracao } from './Coloracao';
 import { getRandomCaracteristica, ICaracteristica } from './Caracteristica';
-import { randomInt } from './../utils/math';
+import { randomInt } from '../utils/math';
 
 export default class Goblin {
   public ocupacao: IOcupacao;
   public coloracao: IColoracao;
   public caracteristica: ICaracteristica;
-  public equipamentos: string[];
   public nome: string;
 
-  constructor() {}
+  constructor(name?:string ) {
+    this.nome = name || this.generateName();
+    this.ocupacao = getRandomOcupacao();
+    this.coloracao = getRandomColoracao();
+    this.caracteristica = getRandomCaracteristica();
+  }
 
   public static generateGoblin(name?: string) {
     const goblin = new Goblin();
-    goblin.nome = name || goblin.generateName();
-    goblin.ocupacao = getRandomOcupacao();
-    goblin.coloracao = getRandomColoracao();
-    goblin.caracteristica = getRandomCaracteristica();
+
     return goblin;
   }
 

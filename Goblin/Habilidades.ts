@@ -1,4 +1,9 @@
-export const Habilidades = {
+export interface HabilidadeType {
+  nome: string,
+  descricao: string
+}
+
+export const Habilidades: Record<string, HabilidadeType> = {
   MestreDeArmas: {
     nome: "Mestre de Armas",
     descricao:

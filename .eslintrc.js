@@ -4,11 +4,8 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['eslint:recommended', 'prettier/@typescript-eslint', 'plugin:prettier/recommended'],
-  globals: {
-    NodeJS: true,
-    BigInt: true
-  },
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+  globals: {},
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 6,

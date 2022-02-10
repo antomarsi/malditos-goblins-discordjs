@@ -3,7 +3,6 @@ import {
   CommandOptionType,
   SlashCreator,
   CommandContext,
-  InteractionResponseFlags,
   EmbedField
 } from 'slash-create';
 import Goblin from '../Goblin';
@@ -24,51 +23,62 @@ export default class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
-    const goblin = Goblin.generateGoblin(ctx.options.nome ?? undefined);
+    const goblin = new Goblin(ctx.options.nome ?? undefined);
     const fields: EmbedField[] = [];
-    const user = ctx.member?.mention ?? ctx.user.mention;
+    const user = ctx.member?.displayName ?? ctx.user.username;
 
-    fields.push({ name: 'Nome gerado:', value: goblin.nome, inline: true });
+    fields.push({ name: 'Nome:', value: goblin.nome, inline: true });
     fields.push({ name: 'Ocupação:', value: goblin.ocupacao.nome, inline: true });
     fields.push({ name: 'Coloração:', value: goblin.coloracao.nome, inline: true });
     fields.push({ name: 'Caracteristica:', value: goblin.caracteristica.nome, inline: true });
+
+    const status = [
+      {
+        icon: ':crossed_swords:',
+        name: 'Combate',
+        value: goblin.combate
+      },
+      {
+        icon: ':man_running:',
+        name: 'Habilidade',
+        value: goblin.habilidade
+      },
+      {
+        icon: ':books:',
+        name: 'Conhecimento',
+        value: goblin.conhecimento
+      },
+      {
+        icon: ':four_leaf_clover:',
+        name: 'Sorte',
+        value: goblin.sorte
+      }
+    ];
     fields.push({
-      name: ':crossed_swords: Combate',
-      value: goblin.combate.toString(),
-      inline: true
-    });
-    fields.push({
-      name: ':man_running: Habilidade',
-      value: goblin.habilidade.toString(),
-      inline: true
-    });
-    fields.push({
-      name: ':books: Conhecimento',
-      value: goblin.conhecimento.toString(),
-      inline: true
-    });
-    fields.push({
-      name: ':four_leaf_clover: Sorte',
-      value: goblin.sorte.toString(),
-      inline: true
+      name: 'Status',
+      value: status.map(({ icon, name, value }) => `${icon} ${name}: ${value}`).join('\n')
     });
 
     goblin.ocupacao.habilidades.forEach((skill, index) => {
-      fields.push({ name: `Level ${index + 1} - ${skill.name}`, value: skill.description });
+      fields.push({ name: `Level ${index + 1} - ${skill.nome}`, value: skill.descricao });
     });
 
     fields.push({
       name: `Equipamentos iniciais:`,
       value: goblin.ocupacao.equipamento
     });
-    // TODO Fix the response
     await ctx.send({
-      content: "teste",
       embeds: [
         {
+          author: {
+            name: user
+          },
           color: goblin.cor,
           title: `Uma nova *Coisinha Verde©* (ou de outra cor) foi criada`,
-          fields
+          fields: fields,
+          thumbnail: {
+            url: 'https://miro.medium.com/max/540/0*v3Esf0m1A-bbwd9i.png'
+          }
         }
       ]
     });
