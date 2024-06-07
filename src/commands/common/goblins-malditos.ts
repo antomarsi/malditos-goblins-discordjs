@@ -1,4 +1,4 @@
-import { ActionRowBuilder, APISelectMenuOption, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, APISelectMenuOption, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle, User } from "discord.js";
 import { Command, CommandProps } from "../../structs/types/Command";
 import { Goblin } from "../../engine/GoblinEngine";
 
@@ -41,10 +41,18 @@ const commandSobre: runCommandFunc = async ({ interaction, options }) => {
     await interaction.reply({ embeds: [sobreEmbed], components: [row], ephemeral: true })
 }
 
+const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
+
+    const goblinEmb = new EmbedBuilder()
+    .addFields()
+
+    return goblinEmb
+}
+
 const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => {
 
     const charac = Goblin.generateCharacteristic()
-    const ocupacao = Goblin.generateOcupation()
+    const ocupation = Goblin.generateOcupation()
     const descritor = Goblin.generateDescritor()
 
     let goblinName = options.getString("nome") ?? Goblin.generateName()
@@ -67,10 +75,12 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         modal.setComponents(nameRow)
         await interaction.showModal(modal);
 
-        const modalInteraction = await interaction.awaitModalSubmit({ time: 30_000, filter: i => {
-            i.deferUpdate()
-            return i.user.id === interaction.user.id
-        } }).catch(error => {
+        const modalInteraction = await interaction.awaitModalSubmit({
+            time: 30_000, filter: i => {
+                i.deferUpdate()
+                return i.user.id === interaction.user.id
+            }
+        }).catch(error => {
             console.log(error)
             return null
         })
@@ -90,7 +100,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         return i.user.id === interaction.user.id;
     }
 
-    const equipOptions: StringSelectMenuOptionBuilder[] = ocupacao.equipamentos.map<StringSelectMenuOptionBuilder>((v, index) => {
+    const equipOptions: StringSelectMenuOptionBuilder[] = ocupation.equipamentos.map<StringSelectMenuOptionBuilder>((v, index) => {
         const equipDescription = Goblin.getEquipsDescription(v)
         return new StringSelectMenuOptionBuilder({
             label: equipDescription.title,
@@ -108,9 +118,9 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         ]
     })
 
-    console.debug(`Seu chamado ${goblinName}, será um ${ocupacao.title}, selecione seu equipamento:`)
+    console.debug(`Seu chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`)
     const weaponMsg = await interaction.followUp({
-        content: `Seu chamado ${goblinName}, será um ${ocupacao.title}, selecione seu equipamento:`,
+        content: `Seu chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`,
         components: [weaponSelectRow],
         ephemeral: true,
         fetchReply: true
@@ -123,13 +133,13 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
     } catch (err) {
         throw new Error(`User didn't selected a weapon: ${err}`)
     }
-    await weaponMsg.delete()
+
     let magics
-    if (ocupacao.useMagic) {
+    if (ocupation.useMagic) {
         const magicOptions: StringSelectMenuOptionBuilder[] = Goblin.getMagics().map<StringSelectMenuOptionBuilder>(v => new StringSelectMenuOptionBuilder({ label: v.title, value: v.value, emoji: v.emoji }))
 
-        const magicMsg = await interaction.followUp({
-            content: `Como você é ${ocupacao.title}, selecione 3 magias:`,
+        const magicMsg = await weaponMsg.edit({
+            content: `Como você é ${ocupation.title}, selecione 3 magias:`,
             components: [new ActionRowBuilder<StringSelectMenuBuilder>({
                 components: [
                     new StringSelectMenuBuilder({
@@ -147,12 +157,13 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             throw new Error("Deu pau quando vc era pra escolher 3 magias 😢, tente novamente.")
         }
         magics = collectorMagic.values
-
     }
+
+    const goblin = new Goblin(goblinName, ocupation, descritor, charac, equipSelected, magics)
+
     interaction.followUp({
-        content: "tudo certo",
-        components: [],
-        ephemeral: true
+        content: `<@${interaction.user.id}> criou o seguinte goblin:`,
+        embeds: [createEmbbedFromGoblin(goblin)]
     })
 }
 

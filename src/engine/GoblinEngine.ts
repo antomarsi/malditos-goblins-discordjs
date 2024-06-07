@@ -92,16 +92,16 @@ export class Goblin {
   ocupation: Ocupation
   descritor: Descritor
   caracteristica: Characteristic
-  equips: Equip[]
-  magics?: Magic[]
+  _equips: number
+  _magics?: string[]
 
-  constructor(name: string, ocupation: Ocupation, descritor: Descritor, charac: Characteristic, equips: Equip[], magics?: Magic[]) {
+  constructor(name: string, ocupation: Ocupation, descritor: Descritor, charac: Characteristic, equips: number, magics?: string[]) {
     this.nome = name
     this.ocupation = ocupation
     this.descritor = descritor
     this.caracteristica = charac
-    this.equips = equips
-    this.magics = magics
+    this._equips = equips
+    this._magics = magics
   }
 
   public get combate(): number {
