@@ -1,7 +1,8 @@
-{
-    "fogo": {
+[
+    {
         "title": "Fogo",
         "emoji": "🔥",
+        "type": "fogo",
         "value": [
             "Uma explosão queima seu rosto e você recebe 1 ferimento.",
             "Uma bolinha de fogo capaz de iluminar o caminho. Não dá pra arremessá-la.",
@@ -9,8 +10,9 @@
             "Uma rajada de fogo engole todas as criaturas à sua frente, incluindo aliados. Todos receberão 4 ferimentos de fogo."
         ]
     },
-    "gelo": {
+    {
         "title": "Gelo",
+        "type": "gelo",
         "emoji": "🍨",
         "value": [
             "Um dos seus braços se congela e não pode ser usado até o final do dia.",
@@ -19,9 +21,10 @@
             "Todas as criaturas visíveis, incluindo aliados, ficam completamente congelados por alguns minutos (mas estarão conscientes embaixo do gelo)."
         ]
     },
-    "relampago": {
+    {
         "title": "Relâmpago",
         "emoji": "🌩️",
+        "type": "relampago",
         "value": [
             "Um relâmpago cai em cima de você e causa 1 ferimento.",
             "Um relâmpago cai em um inimigo à sua escolha e causa 1 ferimento.",
@@ -29,9 +32,10 @@
             "Uma tempestade se forma no céu. Relâmpagos caem aleatoriamente até o final da batalha."
         ]
     },
-    "troca": {
+    {
         "title": "Troca",
         "emoji": "🔃",
+        "type": "troca",
         "value": [
             "Sua roupa é trocada pela roupa de outro personagem aleatório.",
             "Você desaparece e aparece em um local à sua escolha. Suas roupas e pertences ficam para trás.",
@@ -39,9 +43,10 @@
             "Você desaparece e aparece em um local aleatório desconhecido."
         ]
     },
-    "cura": {
+    {
         "title": "Cura",
         "emoji": "🩹",
+        "type": "cura",
         "value": [
             "Sua pele fica pálida e você fica tonto. Perca 1 de Vitalidade até o final do dia.",
             "Um aliado ao seu toque remove 1 ferimento.",
@@ -49,9 +54,10 @@
             "Todas as criaturas visíveis, incluindo inimigos, removem todos seus ferimentos."
         ]
     },
-    "morte": {
+    {
         "title": "Morte",
         "emoji": "☠️",
+        "type": "morte",
         "value": [
             "Sua pele cai e você vira um esqueleto ambulante. Perca permanentemente 1 de Habilidade e 1 de Vitalidade.",
             "Você pode animar um esqueleto que esteja inteiro. Ele lutará para você por 2 turnos.",
@@ -59,9 +65,10 @@
             "Todos os esqueletos a até 10 metros de você ganham vida e começam a dançar por 1 hora."
         ]
     },
-    "planta": {
+    {
         "title": "Planta",
         "emoji": "🌱",
+        "type": "planta",
         "value": [
             "Nascem folhas e flores por todo o seu corpo.",
             "Você cria plantas ou arbustos com o seu toque na terra.",
@@ -69,4 +76,4 @@
             "Surge um matagal cheio de plantas à sua volta (raio de 5 metros de você)."
         ]
     }
-}
+]

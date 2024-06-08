@@ -288,7 +288,7 @@
             "skills": [
                 {
                     "title": "Magias",
-                    "description": "Você pode conjurar magias da sua lista (escolha 3 magias). Para conjurar uma magia, faça um teste de Noção e consulte o efeito da magia (Use o comando para consultar as magias)."
+                    "description": "Você pode conjurar magias da sua lista (escolha 3 magias). Para conjurar uma magia, faça um teste de Noção e consulte o efeito da magia (Use o comando para */malditos-goblins magia <magia>* para consultar a magia)."
                 },
                 {
                     "title": "Condutor Mágico",

@@ -1,6 +1,7 @@
-import { ActionRowBuilder, APISelectMenuOption, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle, User } from "discord.js";
+import { ActionRowBuilder, APIEmbedField, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Command, CommandProps } from "../../structs/types/Command";
 import { Goblin } from "../../engine/GoblinEngine";
+import { randomInt, Range } from "../../utils/math";
 
 type runCommandFunc = (props: CommandProps) => Promise<void>
 
@@ -27,6 +28,10 @@ const commandSobre: runCommandFunc = async ({ interaction, options }) => {
                 ].join('\n'),
             },
             {
+                name: "Arte",
+                value: "Toda arte vem do Manual oficial do Malditos Goblins, criado por Bruno Henrique Junges"
+            },
+            {
                 name: 'Sobre o BOT',
                 value:
                     'É um bot simples e também de código-aberto, caso queira ajudar ou caso houver algum problema, podes clicar no botão "Gihub" abaixo'
@@ -42,9 +47,63 @@ const commandSobre: runCommandFunc = async ({ interaction, options }) => {
 }
 
 const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
+    let fields: APIEmbedField[] = [
+        { name: "Nome:", value: goblin.nome, inline: true },
+        { name: "Ocupação:", value: goblin.ocupation.title, inline: true },
+        { name: "Descritor:", value: goblin.descritor.title, inline: true },
+        { name: goblin.caracteristica.title, value: goblin.caracteristica.description },
+        {
+            name: "Status:",
+            value: [
+                {
+                    icon: '⚔️',
+                    name: 'Combate',
+                    value: goblin.combate
+                },
+                {
+                    icon: '🏃',
+                    name: 'Habilidade',
+                    value: goblin.habilidade
+                },
+                {
+                    icon: '❤️',
+                    name: 'Vitalidade',
+                    value: goblin.vitalidade
+                },
+                {
+                    icon: '📚',
+                    name: 'Noção',
+                    value: goblin.nocao
+                }
+            ].map<string>((v) => `${v.icon} ${v.name}: ${v.value}`).join("\n")
+        },
+        {
+            name: "Técnicas:",
+            value: goblin.ocupation.skills.map<string>((v, index) => `**Level ${index + 1} - ${v.title}**: ${v.description}`).join("\n")
+        }
+    ]
+
+
+    fields.push({
+        name: "Equipamentos iniciais:",
+        value: goblin.equipamentos
+    })
+
+    if (goblin.hasMagic) {
+        fields.push({
+            name: "Magias:",
+            value: goblin.magics.join(", ")
+        })
+        fields.push({
+            name: "Você é um bruxo, então só pra lembrar:",
+            value: "use o comando **/malditos-goblins roll <numero-de-dados> <tipo-da-magia>** para saber o resultado, boa sorte!"
+        })
+    }
+
 
     const goblinEmb = new EmbedBuilder()
-    .addFields()
+        .addFields(...fields)
+        .setThumbnail(`https://raw.githubusercontent.com/antomarsi/malditos-goblins-discordjs/version-2/src/imgs/${goblin.ocupation.value}.png`)
 
     return goblinEmb
 }
@@ -118,7 +177,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         ]
     })
 
-    console.debug(`Seu chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`)
+    console.debug(`Seu goblin chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`)
     const weaponMsg = await interaction.followUp({
         content: `Seu chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`,
         components: [weaponSelectRow],
@@ -138,7 +197,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
     if (ocupation.useMagic) {
         const magicOptions: StringSelectMenuOptionBuilder[] = Goblin.getMagics().map<StringSelectMenuOptionBuilder>(v => new StringSelectMenuOptionBuilder({ label: v.title, value: v.value, emoji: v.emoji }))
 
-        const magicMsg = await weaponMsg.edit({
+        const magicMsg = await interaction.followUp({
             content: `Como você é ${ocupation.title}, selecione 3 magias:`,
             components: [new ActionRowBuilder<StringSelectMenuBuilder>({
                 components: [
@@ -167,8 +226,43 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
     })
 }
 
+const commandRoll: runCommandFunc = async ({ interaction, options }) => {
+    const numeroDados = options.getInteger("dados")
+    if (!numeroDados || numeroDados <= 0) {
+        throw new Error("Valor invalido pra jogar os dados")
+    }
+
+    const dadoMagia = options.getString("dado-magia")
+    if (!dadoMagia) {
+        throw new Error("Tipo de magia não especificado")
+    }
+    if (dadoMagia) {
+        const hits = Range(1, numeroDados).reduce((acc, cur) => {
+            return acc + (cur >= 4 ? 1 : 0);
+        }, 0)
+        const magia = Goblin.getMagicDice(dadoMagia, numeroDados)
+        if (magia == undefined) {
+            throw new Error("Essa magia não existe, tente novamente")
+        } else {
+            interaction.reply({
+                content: `<@${interaction.user.id}> com ${hits} acertos, a magia ${magia.title} resultou em:\n:${magia.description}`
+            })
+        }
+
+        return;
+    } else {
+        interaction.reply({
+            content: `<@${interaction.user.id}> rolou ${numeroDados} dados com o resultado\n:
+            Resultado: ${Range(1, numeroDados).map(v => randomInt(1, 6)).reduce<string[]>((acc, cur) => {
+                acc.push(randomInt(1, 6).toString())
+                return acc
+            }, []).join(", ")}`
+        })
+    }
+};
+
 export default new Command({
-    name: "goblins-malditos",
+    name: "malditos-goblins",
     description: "Gerenciador do bot Malditos Goblins",
     type: ApplicationCommandType.ChatInput,
     options: [
@@ -188,6 +282,24 @@ export default new Command({
             name: "sobre",
             description: "Saiba mais sobre o bot",
             type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: "roll",
+            description: "Joga seus dados, boa sorte",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "dados",
+                    description: "Número de dados, se for magia, é o seu valor de noção",
+                    type: ApplicationCommandOptionType.Integer,
+                    required: true
+                },
+                {
+                    name: "dado-magia",
+                    description: "Qual o tipo de magia",
+                    type: ApplicationCommandOptionType.String
+                }
+            ]
         }
     ],
     async run(props) {
@@ -211,6 +323,10 @@ export default new Command({
 
             case "sobre":
                 await commandSobre(props)
+                break;
+
+            case "roll":
+                await commandRoll(props)
                 break;
 
             default:
