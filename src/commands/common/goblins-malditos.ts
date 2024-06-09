@@ -1,4 +1,4 @@
-import { ActionRowBuilder, APIEmbedField, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, APIEmbedField, ApplicationCommandOptionType, ApplicationCommandOptionWithChoicesMixin, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Command, CommandProps } from "../../structs/types/Command";
 import { Goblin } from "../../engine/GoblinEngine";
 import { randomInt, Range } from "../../utils/math";
@@ -232,33 +232,41 @@ const commandRoll: runCommandFunc = async ({ interaction, options }) => {
         throw new Error("Valor invalido pra jogar os dados")
     }
 
-    const dadoMagia = options.getString("dado-magia")
-    if (!dadoMagia) {
-        throw new Error("Tipo de magia não especificado")
-    }
-    if (dadoMagia) {
-        const hits = Range(1, numeroDados).reduce((acc, cur) => {
-            return acc + (cur >= 4 ? 1 : 0);
-        }, 0)
-        const magia = Goblin.getMagicDice(dadoMagia, numeroDados)
-        if (magia == undefined) {
-            throw new Error("Essa magia não existe, tente novamente")
-        } else {
-            interaction.reply({
-                content: `<@${interaction.user.id}> com ${hits} acertos, a magia ${magia.title} resultou em:\n:${magia.description}`
-            })
-        }
+    interaction.reply({
+        content: `<@${interaction.user.id}> rolou ${numeroDados} dado(s) com o resultado:\n
+        Resultado: ${Range(1, numeroDados).map(_ => randomInt(1, 6)).reduce<string[]>((acc, cur) => {
+            acc.push(randomInt(1, 6).toString())
+            return acc
+        }, []).join(", ")}`
+    })
+}
 
-        return;
+const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
+    const numeroDados = options.getInteger("dado-magia")
+    if (!numeroDados || numeroDados <= 0) {
+        throw new Error("Valor invalido pra jogar os dados")
+    }
+
+    const dadoMagia = options.getString("tipo-magia")
+    if (!dadoMagia) {
+        throw new Error("Magia inválida");
+    }
+    const dados = Range(1, numeroDados).map(_ => randomInt(1, 6))
+
+    const hits = dados.reduce((acc, cur) => {
+        return acc + (cur >= 4 ? 1 : 0);
+    }, 0)
+    const magia = Goblin.getMagicDice(dadoMagia, numeroDados)
+    if (magia == undefined) {
+        throw new Error("Essa magia não existe, tente novamente")
     } else {
         interaction.reply({
-            content: `<@${interaction.user.id}> rolou ${numeroDados} dados com o resultado\n:
-            Resultado: ${Range(1, numeroDados).map(v => randomInt(1, 6)).reduce<string[]>((acc, cur) => {
-                acc.push(randomInt(1, 6).toString())
-                return acc
-            }, []).join(", ")}`
+            content: `<@${interaction.user.id}> jogou **${numeroDados}** dado(s) (${dados.join(", ")}) com **${hits} acertos**, a magia de ${magia.title} resultou em:\n**${magia.description}**`
         })
     }
+
+    return;
+
 };
 
 export default new Command({
@@ -290,18 +298,45 @@ export default new Command({
             options: [
                 {
                     name: "dados",
+                    description: "Número de dados",
+                    type: ApplicationCommandOptionType.Integer,
+                    required: true
+                }
+            ]
+        },
+        {
+            name: "roll-magia",
+            description: "Joga seus dados, para testar sua magia",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "tipo-magia",
+                    description: "Qual o tipo de magia",
+                    type: ApplicationCommandOptionType.String,
+                    required: true,
+                    autocomplete: true,
+                },
+                {
+                    name: "dado-magia",
                     description: "Número de dados, se for magia, é o seu valor de noção",
                     type: ApplicationCommandOptionType.Integer,
                     required: true
                 },
-                {
-                    name: "dado-magia",
-                    description: "Qual o tipo de magia",
-                    type: ApplicationCommandOptionType.String
-                }
             ]
-        }
+        },
     ],
+    async autoComplete(interaction) {
+        const focusedOption = interaction.options.getFocused(true);
+        let choices: { name: string, value: string }[] = []
+        if (focusedOption.name == "tipo-magia") {
+            choices = Goblin.getMagics().map(v => ({ name: v.title, value: v.value }))
+        }
+        const value = focusedOption.value.toLocaleLowerCase()
+        const filtered = choices.filter(choice => choice.name.toLocaleLowerCase().startsWith(value) || choice.value.toLocaleLowerCase().startsWith(value))
+        await interaction.respond(
+            filtered
+        )
+    },
     async run(props) {
         const { interaction, options } = props
 
@@ -324,11 +359,12 @@ export default new Command({
             case "sobre":
                 await commandSobre(props)
                 break;
-
             case "roll":
                 await commandRoll(props)
                 break;
-
+            case "roll-magia":
+                await commandRollMagia(props)
+                break;
             default:
                 console.log("Nenhum commando selectionado")
                 break;

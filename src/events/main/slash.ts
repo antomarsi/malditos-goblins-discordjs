@@ -5,18 +5,25 @@ import { Event } from "../../structs/types/Event";
 
 export default new Event({
     name: Events.InteractionCreate,
-    run(interaction) {
-        if (!interaction.isCommand()) return;
+    async run(interaction) {
+        if (interaction.isAutocomplete()) {
+            const command = client.commands.get(interaction.commandName)
+            if (!command || !command.autoComplete) return;
+            command.autoComplete(interaction);
+            return
+        }
+        if (interaction.isChatInputCommand()) {
+            const command = client.commands.get(interaction.commandName)
+            if (!command) return;
 
-        const command = client.commands.get(interaction.commandName)
-        if (!command) return;
+            const options = interaction.options as CommandInteractionOptionResolver
 
-        const options = interaction.options as CommandInteractionOptionResolver
-
-        command.run({
-            client,
-            interaction,
-            options
-        })
+            command.run({
+                client,
+                interaction,
+                options
+            })
+            return
+        }
     }
 })
