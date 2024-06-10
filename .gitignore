@@ -13,5 +13,4 @@ logs/
 !.vscode/extensions.json
 .env
 .env.*
-dist/
 !.env.example

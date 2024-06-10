@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 import { ExtendClient } from "./structs/ExtendedClient";
 import { Events } from "discord.js";
 export * from "colors";
