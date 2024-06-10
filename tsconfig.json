@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2022",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "CommonJS",
@@ -11,9 +11,8 @@
     "sourceMap": false,
     "outDir": "./dist",
     "importHelpers": true,
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
     "strict": true,
     "useUnknownInCatchVariables": false,
     "skipDefaultLibCheck": true,

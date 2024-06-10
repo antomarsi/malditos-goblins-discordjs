@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "tsc src/index.ts",
-    "start": "tsc src/index.ts && node ."
+    "build": "tsc",
+    "start": "node ."
   },
   "dependencies": {
     "colors": "^1.4.0",
