@@ -9,6 +9,9 @@
     "build": "tsc",
     "start": "node ."
   },
+  "engines": {
+    "node": "20"
+  },
   "dependencies": {
     "colors": "^1.4.0",
     "discord.js": "^14.15.2",
