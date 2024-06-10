@@ -1,0 +1,175 @@
+[
+    {
+        "value": "31",
+        "title": "Amaldiçoado",
+        "description": "Você acha que é um humano que foi amaldiçoado e precisa quebrar a maldição. Mas, na verdade, você é só um goblin perdido."
+    },
+    {
+        "value": "46",
+        "title": "Amarelo",
+        "description": "Sua pele é amarela. Apêndice extra: Você tem dois apêndices. Você tem o dobro de chance de ter apendicite."
+    },
+    {
+        "value": "65",
+        "title": "Aracnídeo",
+        "description": "Você consegue escalar superfícies lisas e pode defecar cordas de seda."
+    },
+    {
+        "value": "56",
+        "title": "Azul",
+        "description": "Sua pele é azul"
+    },
+    {
+        "value": "11",
+        "title": "Bomba-relógio",
+        "description": "Você pode explodir a qualquer momento. Sempre que alguém fala algo relacionado com fogo ou explosão role um dado. Se cair \"1\", você explode."
+    },
+    {
+        "value": "53",
+        "title": "Braço Extra",
+        "description": "Você tem um braço extra que sai do meio das suas costas."
+    },
+    {
+        "value": "63",
+        "title": "Cabeça Extra",
+        "description": "Você tem duas cabeças. O que não quer dizer muita coisa, já que duas cabeças de goblin não pensam melhor que uma."
+    },
+    {
+        "value": "22",
+        "title": "Cabeção",
+        "description": "Você tem um cabeção que contém um cérebro gigante. Você pode saber de qualquer coisa e conhecimento obscuro, mas não pode usar elmos ou bonés."
+    },
+    {
+        "value": "54",
+        "title": "Chifre",
+        "description": "Você tem um grande e imponente chifre de unicórnio saindo da sua testa."
+    },
+    {
+        "value": "64",
+        "title": "Cicatrizes",
+        "description": "Você tem cicatrizes por todo o corpo."
+    },
+    {
+        "value": "21",
+        "title": "Cinzento",
+        "description": "Sua pele é cinza e enrugada. Você pode ter barba branca comprida se quiser."
+    },
+    {
+        "value": "36",
+        "title": "Colorido",
+        "description": "Sua pele tem vários tons e cores. Toda manhã, as cores mudam de lugar."
+    },
+    {
+        "value": "55",
+        "title": "Felino",
+        "description": "Você acha que é um gato e vive se lamben-do, miando e ronronando."
+    },
+    {
+        "value": "51",
+        "title": "Flutulência",
+        "description": "Você vive se peidando, mas se quiser pode usar isso para dar saltos de até 6 metros de altura ou correr até o dobro da velocidade."
+    },
+    {
+        "value": "26",
+        "title": "Fosforescente",
+        "description": "Sua pele é de um tom verde fosfo-rescente. Você brilha no escuro."
+    },
+    {
+        "value": "35",
+        "title": "Galináceo",
+        "description": "Você acha que é uma galinha e vive cacarejando e ciscando."
+    },
+    {
+        "value": "32",
+        "title": "Linguão",
+        "description": "Você possui uma língua gigante. Você não tem muito controle sobre ela, então ela vive fora da sua boca babando e impedindo que você fale direito."
+    },
+    {
+        "value": "34",
+        "title": "Listras",
+        "description": "Você possui listras azuis por todo o corpo."
+    },
+    {
+        "value": "62",
+        "title": "Mão gigante",
+        "description": "Uma das suas mãos tem o dobro do tamanho de uma mão de goblin comum."
+    },
+    {
+        "value": "12",
+        "title": "Minicabeça",
+        "description": "Você possui uma cabeça muito pequena. Seus olhos parecem que vão saltar do rosto (talvez vão!) e você não pode usar elmos."
+    },
+    {
+        "value": "25",
+        "title": "Minion",
+        "description": "Você gosta de usar camiseta amarela e odeia qualquer um que use vermelho. Acredita em qualquer mentira."
+    },
+    {
+        "value": "33",
+        "title": "Nariz extra",
+        "description": "Você possui um nariz extra no cotovelo."
+    },
+    {
+        "value": "42",
+        "title": "Olho gigante",
+        "description": "Um dos seus olhos é gigante e rara-mente pisca."
+    },
+    {
+        "value": "43",
+        "title": "Olhos extras",
+        "description": "Você possui 1d6 olhos a mais na cabeça (em vários lugares diferentes)."
+    },
+    {
+        "value": "23",
+        "title": "Orelha extra",
+        "description": "Você possui uma orelha extra embaixo do sovaco."
+    },
+    {
+        "value": "45",
+        "title": "Peixoso",
+        "description": "Você acha que é um peixe e precisa estar sempre molhado."
+    },
+    {
+        "value": "52",
+        "title": "Pés gigantes",
+        "description": "Seus pés são gigantes. Você não pode usar nenhum tipo de calçado."
+    },
+    {
+        "value": "24",
+        "title": "Pintas",
+        "description": "Você possui pintas cor de rosa espalhadas por todo o corpo. Algumas têm formato de coração."
+    },
+    {
+        "value": "44",
+        "title": "Pompom",
+        "description": "Você possui um pequeno rabo com um pompom na ponta, como de um poodle bem tosado."
+    },
+    {
+        "value": "14",
+        "title": "Poros fedidos",
+        "description": "Você exala um odor extremamente desagradável e ninguém consegue ficar perto de você por muito tempo sem ficar nauseado."
+    },
+    {
+        "value": "41",
+        "title": "Tom bélico",
+        "description": "Sempre que você conversa com alguém, este se sentirá ofendido sem razão."
+    },
+    {
+        "value": "15",
+        "title": "Verdura",
+        "description": "Você acha que é uma planta e insiste em fazer fotossíntese."
+    },
+    {
+        "value": "66",
+        "title": "Vermelho",
+        "description": "Sua pele é vermelha."
+    },
+    {
+        "value": "61",
+        "reroll": true
+    },
+    {
+        "value": "16",
+        "reroll": true
+    }
+]

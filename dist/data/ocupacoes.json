@@ -1,0 +1,400 @@
+{
+    "ocupacao": [
+        {
+            "title": "Mercenário",
+            "value": "mercenario",
+            "stats": {
+                "combate": 1,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 0
+            },
+            "skills": [
+                {
+                    "title": "Mestre de Armas",
+                    "description": "Você sempre rola +1 dado em todos os ataques que fizer lutando com sua arma favorita."
+                },
+                {
+                    "title": "Ataque Giratório",
+                    "description": "Sempre que você causar dano a um inimigo com uma arma corporal, pode fazer mais um ataque contra outro inimigo que estiver ao seu alcance."
+                },
+                {
+                    "title": "Ataque Brutal",
+                    "description": "Uma vez por dia, você pode declarar um Ataque Brutal. Faça um ataque corporal normalmente com o dobro de dados."
+                }
+            ],
+            "equipamentos": [
+                [
+                    {
+                        "value": "Espada",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Escudo",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Machadinha",
+                        "qtd": 2,
+                        "type": "armas"
+                    }
+                ],
+                [
+                    {
+                        "value": "Machadão",
+                        "type": "armas",
+                        "qtd": 1
+                    }
+                ]
+            ]
+        },
+        {
+            "title": "Caçador",
+            "value": "cacador",
+            "stats": {
+                "combate": 1,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 0
+            },
+            "skills": [
+                {
+                    "title": "Inimigo",
+                    "description": "Escolha uma espécie de criatura quando começar o jogo. Você sempre rola +1 dado em todos os ataques contra essa espécie de criatura."
+                },
+                {
+                    "title": "Rastrear",
+                    "description": "Você sabe seguir pegadas e identificar a criatura das pegadas."
+                },
+                {
+                    "title": "Tiro Certeiro",
+                    "description": "Uma vez por dia, você pode declarar um Tiro Certeiro. Faça um ataque à distância normalmente com o dobro de dados."
+                }
+            ],
+            "equipamentos": [
+                [
+                    {
+                        "value": "Adaga",
+                        "qtd": 3,
+                        "type": "armas"
+                    }
+                ],
+                [
+                    {
+                        "value": "Arco e Flecha",
+                        "qtd": 1,
+                        "type": "armas"
+                    }
+                ],
+                [
+                    {
+                        "value": "Pistola",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Chapéu",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ]
+            ]
+        },
+        {
+            "title": "Gatuno",
+            "value": "gatuno",
+            "stats": {
+                "combate": 0,
+                "habilidade": 1,
+                "nocao": 0,
+                "vitalidade": 0
+            },
+            "skills": [
+                {
+                    "title": "Roubar",
+                    "description": "Conseguindo 1 hit em um teste de Habilidade, você pode roubar um objeto do bolso de qualquer pessoa sem que ela perceba."
+                },
+                {
+                    "title": "Ataque Furtivo",
+                    "description": "Você sempre rola 2 dados a mais se fizer um ataque contra um alvo que não sabe onde você está."
+                },
+                {
+                    "title": "Esconder",
+                    "description": "Uma vez por dia, você pode se esconder sem precisar fazer um teste. Você estará completamente escondido até se mexer ou emitir som."
+                }
+            ],
+            "equipamentos": [
+                [
+                    {
+                        "value": "Adaga",
+                        "qtd": 3,
+                        "type": "armas"
+                    }
+                ],
+                [
+                    {
+                        "value": "Rapieira",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Broquel",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Pistola",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Chapéu",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ]
+            ]
+        },
+        {
+            "title": "Líder",
+            "value": "lider",
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 1
+            },
+            "skills": [
+                {
+                    "title": "Grito de Guerra",
+                    "description": "Uma vez por dia, você pode dar este grito. Faça um teste de Noção e, se conseguir 1 hit, todos os seus aliados ficarão com Combate +1 até o final da batalha."
+                },
+                {
+                    "title": "Humilhação",
+                    "description": "Uma vez por dia, você pode gritar e xingar um aliado seu que eliminará todos os ferimentos dele."
+                },
+                {
+                    "title": "Ataque Brutal",
+                    "description": "Uma vez por dia, você pode declarar um Ataque Brutal. Faça um ataque corporal normalmente com o dobro de dados."
+                }
+            ],
+            "equipamentos": [
+                [
+                    {
+                        "value": "Espada",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Medalhas de Guerra",
+                        "type": "outros",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Lança",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Elmo",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Espadona",
+                        "type": "armas",
+                        "qtd": 1
+                    }
+                ]
+            ]
+        },
+        {
+            "title": "Incendiário",
+            "value": "incendiario",
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 1
+            },
+            "skills": [
+                {
+                    "title": "Resistência",
+                    "description": "Você sempre recebe 1 ferimento a menos de ataques de fogo ou tiro de armas de fogo."
+                },
+                {
+                    "title": "Delírio",
+                    "description": "Você pode se livrar de todos os ferimentos se você explodir ou queimar completamente uma casa ou algo maior que isso."
+                },
+                {
+                    "title": "Imunidade",
+                    "description": "Você é imune a fogo."
+                }
+            ],
+            "equipamentos": [
+                [
+                    {
+                        "value": "Barril de Pólvora",
+                        "type": "outros",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Pistola",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Galinha Explosiva",
+                        "type": "armas",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Bacamarte",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Chapéu",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ]
+            ]
+        },
+        {
+            "title": "Bruxo",
+            "value": "bruxo",
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": 1,
+                "vitalidade": 0
+            },
+            "useMagic": true,
+            "skills": [
+                {
+                    "title": "Magias",
+                    "description": "Você pode conjurar magias da sua lista (escolha 3 magias). Para conjurar uma magia, faça um teste de Noção e consulte o efeito da magia (Use o comando para */malditos-goblins magia <magia>* para consultar a magia)."
+                },
+                {
+                    "title": "Condutor Mágico",
+                    "description": "Se você conjurar a magia por uma varinha, cajado ou outro Condutor Mágico, você rola 1 dado a mais."
+                },
+                {
+                    "title": "Implacável",
+                    "description": "Uma vez por dia, você pode conjurar uma magia sem rolar os dados, apenas escolhendo o resultado."
+                }
+            ],
+            "equipamentos": [
+                [
+                    {
+                        "value": "Cajado",
+                        "type": "armas",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Varinha",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Cachecol",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ],
+                [
+                    {
+                        "value": "Vassoura",
+                        "type": "armas",
+                        "qtd": 1
+                    },
+                    {
+                        "value": "Chapéu",
+                        "type": "protecao",
+                        "qtd": 1
+                    }
+                ]
+            ]
+        }
+    ],
+    "descritor": [
+        {
+            "title": "Covarde",
+            "value": "covarde",
+            "stats": {
+                "combate": -1,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 0
+            }
+        },
+        {
+            "title": "Atrapalhado",
+            "value": "atrapalhado",
+            "stats": {
+                "combate": 0,
+                "habilidade": -1,
+                "nocao": 0,
+                "vitalidade": 0
+            }
+        },
+        {
+            "title": "Tapado",
+            "value": "tapado",
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": -1,
+                "vitalidade": 0
+            }
+        },
+        {
+            "title": "Fracote",
+            "value": "fracote",
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": -1
+            }
+        },
+        {
+            "title": "Medíocre",
+            "value": "mediocre",
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 0
+            }
+        },
+        {
+            "title": "Supimpa",
+            "value": "supimpa",
+            "choose": true,
+            "stats": {
+                "combate": 0,
+                "habilidade": 0,
+                "nocao": 0,
+                "vitalidade": 0
+            }
+        }
+    ]
+}
