@@ -1,4 +1,4 @@
-import { ActionRowBuilder, APIEmbedField, ApplicationCommandOptionType, ApplicationCommandOptionWithChoicesMixin, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, APIEmbedField, Application, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, DiscordjsError, DiscordjsErrorCodes, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Command, CommandProps } from "../../structs/types/Command";
 import { Goblin } from "../../engine/GoblinEngine";
 import { randomInt, Range } from "../../utils/math";
@@ -46,37 +46,36 @@ const commandSobre: runCommandFunc = async ({ interaction, options }) => {
     await interaction.reply({ embeds: [sobreEmbed], components: [row], ephemeral: true })
 }
 
+const runningCommands: string[] = []
+
 const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
     let fields: APIEmbedField[] = [
         { name: "Nome:", value: goblin.nome, inline: true },
         { name: "Ocupação:", value: goblin.ocupation.title, inline: true },
         { name: "Descritor:", value: goblin.descritor.title, inline: true },
         { name: goblin.caracteristica.title, value: goblin.caracteristica.description },
-        {
-            name: "Status:",
-            value: [
-                {
-                    icon: '⚔️',
-                    name: 'Combate',
-                    value: goblin.combate
-                },
-                {
-                    icon: '🏃',
-                    name: 'Habilidade',
-                    value: goblin.habilidade
-                },
-                {
-                    icon: '❤️',
-                    name: 'Vitalidade',
-                    value: goblin.vitalidade
-                },
-                {
-                    icon: '📚',
-                    name: 'Noção',
-                    value: goblin.nocao
-                }
-            ].map<string>((v) => `${v.icon} ${v.name}: ${v.value}`).join("\n")
-        },
+        ...[
+            {
+                icon: '⚔️',
+                name: 'Combate',
+                value: goblin.combate
+            },
+            {
+                icon: '🏃',
+                name: 'Habilidade',
+                value: goblin.habilidade
+            },
+            {
+                icon: '❤️',
+                name: 'Vitalidade',
+                value: goblin.vitalidade
+            },
+            {
+                icon: '📚',
+                name: 'Noção',
+                value: goblin.nocao
+            }
+        ].map((v) => ({ name: `${v.icon} ${v.name}`, value: v.value.toString(), inline: true })),
         {
             name: "Técnicas:",
             value: goblin.ocupation.skills.map<string>((v, index) => `**Level ${index + 1} - ${v.title}**: ${v.description}`).join("\n")
@@ -96,7 +95,7 @@ const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
         })
         fields.push({
             name: "Você é um bruxo, então só pra lembrar:",
-            value: "use o comando **/malditos-goblins roll <numero-de-dados> <tipo-da-magia>** para saber o resultado, boa sorte!"
+            value: "use o comando **/malditos-goblins roll-magia <tipo-magia> <dado-nocao>** para saber o resultado, boa sorte!"
         })
     }
 
@@ -104,19 +103,18 @@ const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
     const goblinEmb = new EmbedBuilder()
         .addFields(...fields)
         .setThumbnail(`https://raw.githubusercontent.com/antomarsi/malditos-goblins-discordjs/version-2/src/imgs/${goblin.ocupation.value}.png`)
+        .setTimestamp()
 
     return goblinEmb
 }
 
 const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => {
-
     const charac = Goblin.generateCharacteristic()
     const ocupation = Goblin.generateOcupation()
     const descritor = Goblin.generateDescritor()
 
     let goblinName = options.getString("nome") ?? Goblin.generateName()
     if (["Ultima coisa que vc comeu", "Inverta seu nome"].includes(goblinName)) {
-        console.debug("Chamando modal de nome")
         const modal = new ModalBuilder({ customId: "modal-goblin-name", title: "Criador de Goblin" })
         const nameRow = new ActionRowBuilder<ModalActionRowComponentBuilder>({
             components: [
@@ -149,7 +147,6 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             return;
         }
         goblinName = modalInteraction.fields.getTextInputValue("goblin-name")
-        console.debug(`finalizado modal, o nome do goblin é ${goblinName}`)
     } else {
         await interaction.deferReply({ ephemeral: true })
     }
@@ -177,20 +174,27 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         ]
     })
 
-    console.debug(`Seu goblin chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`)
     const weaponMsg = await interaction.followUp({
-        content: `Seu chamado ${goblinName}, será um ${ocupation.title}, selecione seu equipamento:`,
+        content: `Seu goblin se chama **${goblinName}**, será um **${ocupation.title}**, selecione seu equipamento:`,
         components: [weaponSelectRow],
         ephemeral: true,
         fetchReply: true
     })
 
     let equipSelected
+    let collectorWeapon
     try {
-        const collectorWeapon = await weaponMsg.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 30_000 });
+        collectorWeapon = await weaponMsg.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 30_000 });
         equipSelected = Number(collectorWeapon.values[0])
+        await collectorWeapon.deleteReply()
     } catch (err) {
-        throw new Error(`User didn't selected a weapon: ${err}`)
+        if (err instanceof DiscordjsError && err.code == DiscordjsErrorCodes.InteractionCollectorError) {
+            console.error(`User ${interaction.user.id} didn't selected a weapon: ${err}`)
+            await collectorWeapon?.deleteReply()
+            return;
+        } else {
+            throw err
+        }
     }
 
     let magics
@@ -199,6 +203,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
 
         const magicMsg = await interaction.followUp({
             content: `Como você é ${ocupation.title}, selecione 3 magias:`,
+            ephemeral: true,
             components: [new ActionRowBuilder<StringSelectMenuBuilder>({
                 components: [
                     new StringSelectMenuBuilder({
@@ -210,19 +215,32 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
                 ]
             })]
         })
+        try {
 
-        const collectorMagic = await magicMsg.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 60_000 });
-        if (collectorMagic.values.length != 3) {
-            throw new Error("Deu pau quando vc era pra escolher 3 magias 😢, tente novamente.")
+            const collectorMagic = await magicMsg.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 30_000 });
+            if (collectorMagic.values.length != 3) {
+                throw new Error("Deu pau quando vc era pra escolher 3 magias 😢, tente novamente.")
+            }
+            await collectorMagic.deleteReply()
+            magics = collectorMagic.values
+        } catch (err) {
+            if (err instanceof DiscordjsError && err.code == DiscordjsErrorCodes.InteractionCollectorError) {
+                console.error(`User ${interaction.user.id} didn't selected a weapon: ${err}`)
+                await magicMsg.delete()
+                return;
+            } else {
+                throw err
+            }
+        } finally {
         }
-        magics = collectorMagic.values
     }
 
     const goblin = new Goblin(goblinName, ocupation, descritor, charac, equipSelected, magics)
-
+    const embed = createEmbbedFromGoblin(goblin)
+    const user = `<@${interaction.user.id}>`
     interaction.followUp({
-        content: `<@${interaction.user.id}> criou o seguinte goblin:`,
-        embeds: [createEmbbedFromGoblin(goblin)]
+        content: `${user} criou o seguinte goblin:`,
+        embeds: [embed]
     })
 }
 
@@ -242,7 +260,7 @@ const commandRoll: runCommandFunc = async ({ interaction, options }) => {
 }
 
 const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
-    const numeroDados = options.getInteger("dado-magia")
+    const numeroDados = options.getInteger("dado-nocao")
     if (!numeroDados || numeroDados <= 0) {
         throw new Error("Valor invalido pra jogar os dados")
     }
@@ -268,6 +286,28 @@ const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
     return;
 
 };
+
+
+const commandEquips: runCommandFunc = async ({ interaction, options }) => {
+    const tipoEquipamento = options.getString("tipo-equip", true)
+
+    if (["armas", "protecao", "outros"].includes(tipoEquipamento)) {
+        let equips = Goblin.getAllEquipsByType(tipoEquipamento as "armas" | "protecao" | "outros")
+        let text = equips.items.join("\n")
+        if (equips.specials.length > 0) {
+            text += `\n ------------------------- \n**Especiais:**\n${equips.specials.join("\n")}`
+        }
+        interaction.reply({
+            content: `**items do tipo ${tipoEquipamento}:**\n\n${text}\n`,
+            ephemeral: true
+        })
+    } else {
+        interaction.reply({
+            content: `Tipo de equipamento inválido`,
+            ephemeral: true
+        })
+    }
+}
 
 export default new Command({
     name: "malditos-goblins",
@@ -317,13 +357,30 @@ export default new Command({
                     autocomplete: true,
                 },
                 {
-                    name: "dado-magia",
-                    description: "Número de dados, se for magia, é o seu valor de noção",
+                    name: "dado-nocao",
+                    description: "O seu valor de noção",
                     type: ApplicationCommandOptionType.Integer,
                     required: true
                 },
             ]
         },
+        {
+            name: "equips",
+            description: "Aqui você encontra todos equipamentos e qualquer outro que os goblins podem encontrar.",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "tipo-equip",
+                    description: "Lista de itens diversos",
+                    type: ApplicationCommandOptionType.String,
+                    choices: [
+                        { name: "Armas", value: "armas" },
+                        { name: "Proteção", value: "protecao" },
+                        { name: "Outros", value: "Outros" },
+                    ]
+                }
+            ]
+        }
     ],
     async autoComplete(interaction) {
         const focusedOption = interaction.options.getFocused(true);
@@ -342,20 +399,28 @@ export default new Command({
 
         const subCommand = options.getSubcommand(true)
 
+        const id = `${interaction.user.id}_${interaction.guildId}`
         switch (subCommand) {
             case "criar":
-                try {
-                    await commandCreateGoblin(props)
-                } catch (error) {
-                    console.error(error)
-                    if (interaction.replied) {
-                        await interaction.editReply({ content: "Algum erro ocorreu, mals" })
-                    } else if (!interaction.replied) {
-                        await interaction.reply({ content: "Algum erro ocorreu, mals", ephemeral: true })
+                if (runningCommands.includes(id)) {
+                    await interaction.reply({ content: "Comando já está sendo executado.", ephemeral: true })
+                } else {
+
+                    runningCommands.push(id)
+                    try {
+                        await commandCreateGoblin(props)
+                    } catch (error) {
+                        console.error(error)
+                        if (interaction.replied) {
+                            await interaction.editReply({ content: "Algum erro ocorreu, mals" })
+                        } else if (!interaction.replied) {
+                            await interaction.reply({ content: "Algum erro ocorreu, mals", ephemeral: true })
+                        }
                     }
+                    const index = runningCommands.indexOf(id)
+                    runningCommands.splice(index, 1)
                 }
                 break;
-
             case "sobre":
                 await commandSobre(props)
                 break;
@@ -365,6 +430,8 @@ export default new Command({
             case "roll-magia":
                 await commandRollMagia(props)
                 break;
+            case "equips":
+                await commandEquips(props)
             default:
                 console.log("Nenhum commando selectionado")
                 break;

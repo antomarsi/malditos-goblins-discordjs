@@ -199,8 +199,20 @@ export class Goblin {
         }
     }
 
+    public static getAllEquipsByType(type: "armas" | "protecao" | "outros") {
+        const items = equipamentos[type].values.map(v => {
+            const equip = Goblin.getEquip(type, v.title)
+            return Goblin.getEquipTitle(equip)
+        })
+        let specials : string[] = []
+        if (type !== "outros") {
+            specials = equipamentos[type].specials.map(v => `**${v.title}**: ${v.description}`)
+        }
+        return {items, specials}
+    }
+
     private static getEquipTitle(equip: Equip, qtd?: number): string {
-        let title = equip.title
+        let title = `**${equip.title}**`
         if (isWeapon(equip)) {
             title += ` (${equip.uso}, ${equip.ataque}, ${equip.bonus}${equip.special ? ", " + equip.special?.map(v => v.qtd ? `${v.title} [${v.qtd}]` : v.title).join(", ") : ""}}`
         } else if (isProtection(equip)) {
@@ -248,7 +260,7 @@ export class Goblin {
 
     public static generateOcupation(): Ocupation {
         const dice = randomInt(0, 5)
-        return ocupacoes.ocupacao[5]
+        return ocupacoes.ocupacao[dice]
     }
 
     public static generateDescritor(): Descritor {
