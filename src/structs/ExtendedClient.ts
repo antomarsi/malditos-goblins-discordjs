@@ -1,7 +1,7 @@
 import { ApplicationCommandDataResolvable, Client, ClientEvents, Collection, GatewayIntentBits, Partials } from "discord.js";
 import { Command, CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from "./types/Command";
-import path from "path";
-import fs from "fs";
+import * as path from "path";
+import * as fs from "fs";
 import { EventType } from "./types/Event";
 
 const fileCondition = (fileName: string) => fileName.endsWith(".ts") || fileName.endsWith(".js")
