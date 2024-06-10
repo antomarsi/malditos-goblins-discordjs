@@ -10,7 +10,7 @@
     "start": "node ."
   },
   "engines": {
-    "node": "20"
+    "node": "16.x"
   },
   "dependencies": {
     "colors": "^1.4.0",
