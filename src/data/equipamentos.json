@@ -1,0 +1,335 @@
+{
+    "armas": {
+        "values": [
+            {
+                "title": "Adaga",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+1d",
+                "special": [
+                    {
+                        "type": "Arremesso"
+                    }
+                ]
+            },
+            {
+                "title": "Arco e Flecha",
+                "uso": "Duas mãos",
+                "ataque": "Distância",
+                "bonus": "+2d",
+                "special": [
+                    {
+                        "type": "Munição",
+                        "qtd": 10
+                    }
+                ]
+            },
+            {
+                "title": "Bacamarte",
+                "uso": "Duas mãos",
+                "ataque": "Distância",
+                "bonus": "+3d",
+                "special": [
+                    {
+                        "type": "Recarga"
+                    },
+                    {
+                        "type": "Munição",
+                        "qtd": 2
+                    }
+                ]
+            },
+            {
+                "title": "Besta",
+                "uso": "Duas mãos",
+                "ataque": "Distância",
+                "bonus": "+3d",
+                "special": [
+                    {
+                        "type": "Recarga"
+                    },
+                    {
+                        "type": " Munição",
+                        "qtd": 6
+                    }
+                ]
+            },
+            {
+                "title": "Cajado",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+1d",
+                "special": [
+                    {
+                        "type": "Condutor Mágico"
+                    }
+                ]
+            },
+            {
+                "title": "Clava",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+1d"
+            },
+            {
+                "title": "Espada",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+2d"
+            },
+            {
+                "title": "Espada de Madeira",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+0d"
+            },
+            {
+                "title": "Espadona",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+3d"
+            },
+            {
+                "title": "Estilingue",
+                "uso": "Duas mãos",
+                "ataque": "Distância",
+                "bonus": "+0d",
+                "special": [
+                    {
+                        "type": "Recarga"
+                    }
+                ]
+            },
+            {
+                "title": "Faca",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+1d"
+            },
+            {
+                "title": "Forcado",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+2d"
+            },
+            {
+                "title": "Gadanha",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+3d"
+            },
+            {
+                "title": "Lança",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+3d"
+            },
+            {
+                "title": "Machadão",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+3d"
+            },
+            {
+                "title": "Machadinha",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+2d",
+                "special": [
+                    {
+                        "type": "Arremesso"
+                    }
+                ]
+            },
+            {
+                "title": "Martelão",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+3d"
+            },
+            {
+                "title": "Pistola",
+                "uso": "Uma mão",
+                "ataque": "Distância",
+                "bonus": "+2d",
+                "special": [
+                    {
+                        "type": "Recarga"
+                    },
+                    {
+                        "type": "Munição",
+                        "qtd": 5
+                    }
+                ]
+            },
+            {
+                "title": "Rapieira",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+2d"
+            },
+            {
+                "title": "Varinha",
+                "uso": "Uma mão",
+                "ataque": "Corporal",
+                "bonus": "+0d"
+            },
+            {
+                "title": "Vassoura",
+                "uso": "Duas mãos",
+                "ataque": "Corporal",
+                "bonus": "+1d",
+                "special": [
+                    {
+                        "type": "Condutor Mágico"
+                    }
+                ]
+            }
+        ],
+        "specials": [
+            {
+                "title": "Arremesso",
+                "description": "Este objeto pode ser arremessado como se fosse uma arma de distância."
+            },
+            {
+                "title": "Condutor",
+                "description": "Mágico: Pode conjurar magias através deste item."
+            },
+            {
+                "title": "Munição",
+                "description": "[X]: Você tem um limite de X ataques. Precisará conseguir mais munição para poder atacar."
+            },
+            {
+                "title": "Recarga",
+                "description": "Depois de atacar, deve gastar um turno recarregando para atacar novamente."
+            }
+        ]
+    },
+    "protecao": {
+        "values": [
+            {
+                "title": "Broquel",
+                "uso": "Uma mão",
+                "durabilidade": 1
+            },
+            {
+                "title": "Cachecol",
+                "uso": "Pescoço",
+                "durabilidade": 0,
+                "special": [
+                    {
+                        "type": "Arcano"
+                    }
+                ]
+            },
+            {
+                "title": "Chapéu",
+                "uso": "Cabeça",
+                "durabilidade": 0,
+                "special": [
+                    {
+                        "type": "Sorte"
+                    }
+                ]
+            },
+            {
+                "title": "Cota de Malha",
+                "uso": "Tronco",
+                "durabilidade": 2
+            },
+            {
+                "title": "Elmo",
+                "uso": "Cabeça",
+                "durabilidade": 2
+            },
+            {
+                "title": "Escudo",
+                "uso": "Uma mão",
+                "durabilidade": 2
+            },
+            {
+                "title": "Panela",
+                "uso": "Cabeça",
+                "durabilidade": 1
+            },
+            {
+                "title": "Peitoral",
+                "uso": "Tronco",
+                "durabilidade": 3
+            },
+            {
+                "title": "Penico",
+                "uso": "Cabeça",
+                "durabilidade": 1,
+                "special": [
+                    {
+                        "type": "Sorte"
+                    }
+                ]
+            },
+            {
+                "title": "Tampa de Panela",
+                "uso": "Uma mão",
+                "durabilidade": 1
+            }
+        ],
+        "specials": [
+            {
+                "title": "Arcano",
+                "description": "Quem estiver vestindo pode rolar 1 dado a mais em testes para conjurar magias."
+            },
+            {
+                "title": "Sorte",
+                "description": "Se estiver na sua cabeça, você pode destruir este item quando receber um ataque à distância e ignorar todo o dano."
+            }
+        ]
+    },
+    "outros": {
+        "values": [
+            {
+                "title": "Aljava",
+                "description": "Possui flechas suficientes para duplicar a quantidade de munição de um arco ou besta."
+            },
+            {
+                "title": "Banquete",
+                "description": "Comida suficiente pra alimentar um bando de goblins por 1d6 dias."
+            },
+            {
+                "title": "Barril de Cerveja",
+                "description": "O suficiente pra embebedar uma festa de goblins inteira."
+            },
+            {
+                "title": "Barril de Pólvora",
+                "description": "Se for aceso, vai explodir e causar 4 ferimentos a todos em sua volta e 2 ferimentos a todos a até 5 metros. Pode usá-lo para completar a munição de até 3 armas de fogo."
+            },
+            {
+                "title": "Corda e Gancho",
+                "description": "Para escalar paredes e muralhas. Adiciona 2 dados no teste de Habilidade para escalar."
+            },
+            {
+                "title": "Guarda-chuva",
+                "description": "Não se molhará se chover. Cobre até 4 goblins. Ajuda a diminuir a queda (-1 ferimento)."
+            },
+            {
+                "title": "Galinha Explosiva",
+                "description": "Você pode arremessá-la ou deixá-la andando. Explode em dois turnos. Quando explode, causa 3 ferimentos a todos em sua volta."
+            },
+            {
+                "title": "Livro",
+                "description": "Estranho O que dá pra fazer? Não sei. Aquele que conseguir 2 hits em um teste de Noção pode conseguir ler. Existe 1 chance em 6 de ser um livro de magia. Se for, sorteie uma magia da lista."
+            },
+            {
+                "title": "Roupa",
+                "description": "Chique Um goblin nojento vestindo isso ainda fica parecendo um goblin nojento, mas pelo menos ajuda a melhorar a autoestima dele."
+            },
+            {
+                "title": "Tenda",
+                "description": "Tenda grande para até 5 goblins (10 se não se importarem de ficar empilhados)."
+            },
+            {
+                "title": "Veneno",
+                "description": "Pode colocar na bebida de alguém. Aquele que beber receberá 1 ferimento por minuto."
+            }
+        ]
+    }
+}
