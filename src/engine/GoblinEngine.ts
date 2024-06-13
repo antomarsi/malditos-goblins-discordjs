@@ -92,7 +92,7 @@ export class Goblin {
     nome: string
     ocupation: Ocupation
     descritor: Descritor
-    caracteristica: Characteristic
+    _caracteristica: Characteristic
     _equips: number
     _magics?: string[]
 
@@ -100,7 +100,7 @@ export class Goblin {
         this.nome = name
         this.ocupation = ocupation
         this.descritor = descritor
-        this.caracteristica = charac
+        this._caracteristica = charac
         this._equips = equips
         this._magics = magics
     }
@@ -118,10 +118,17 @@ export class Goblin {
         return `- **${spc.title}**: ${spc.description}`
     }
 
+    public get caracteristica(): Characteristic {
+        return {
+            title: this._caracteristica.title,
+            description: this._caracteristica.description.replaceAll("1d6", randomInt(1, 6).toString())
+        }
+    }
+
     public get equipamentos(): string {
         const equipObj = this.ocupation.equipamentos[this._equips].map(v => Goblin.getEquipInvDescription(v))
 
-        const result = equipObj.reduce<{value: string[], special: Special[]}>((acc, cur) => {
+        const result = equipObj.reduce<{ value: string[], special: Special[] }>((acc, cur) => {
             acc.value.push(`- ${cur.value}`)
             if (cur.special) {
                 for (const special of cur.special) {
@@ -161,7 +168,7 @@ export class Goblin {
         return magias.map(v => ({ title: v.title, value: v.type, emoji: v.emoji }))
     }
 
-    public static getMagic(type: string) : Magic | undefined {
+    public static getMagic(type: string): Magic | undefined {
         return magias.find(v => v.type === type)
     }
 

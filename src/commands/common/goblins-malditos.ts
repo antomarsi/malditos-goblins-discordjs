@@ -192,7 +192,11 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
 
 
     const weaponMsg = await interaction.followUp({
-        content: `Seu goblin se chama **${goblinName}**, será um **${ocupation.title}**, selecione seu equipamento:`,
+        content: [
+            `Seu goblin se chama **${goblinName}**, será um **${ocupation.title}**`,
+            `Você tem como caracteristica: **${charac.title}**: ${charac.description}`,
+            `Selecione seu equipamento:`
+        ].join("\n"),
         components: [weaponSelectRow],
         ephemeral: true,
         fetchReply: true
