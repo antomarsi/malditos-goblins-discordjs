@@ -1,15 +1,16 @@
 import { Events } from "discord.js";
 import { client } from "../.."
 import { Event } from "../../structs/types/Event";
+import logger from "../../utils/logger";
 
 
 export default new Event({
     name: Events.ClientReady,
     once: true,
     run() {
-        const { commands, buttons, selects, modals } = client;
+        const { commands } = client;
 
-        console.log(`Commands   loaded: ${commands.size}`.cyan)
-        console.log("✅ Bot online".green)
+        logger.info(`Commands   loaded: ${commands.size}`)
+        logger.info("✅ Bot online")
     }
 })

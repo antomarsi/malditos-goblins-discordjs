@@ -1,4 +1,4 @@
-import { CommandInteractionOptionResolver, DiscordjsErrorCodes, Events } from "discord.js";
+import { CommandInteractionOptionResolver, Events } from "discord.js";
 import { client } from "../..";
 import { Event } from "../../structs/types/Event";
 

@@ -8,9 +8,9 @@ export interface CommandProps {
     options: CommandInteractionOptionResolver
 }
 
-export type ComponentsButton = Collection<string, (interaction: ButtonInteraction) => any>
-export type ComponentsSelect = Collection<string, (interaction: StringSelectMenuInteraction) => any>
-export type ComponentsModal = Collection<string, (interaction: ModalSubmitInteraction) => any>
+export type ComponentsButton = Collection<string, (interaction: ButtonInteraction) => void>
+export type ComponentsSelect = Collection<string, (interaction: StringSelectMenuInteraction) => void>
+export type ComponentsModal = Collection<string, (interaction: ModalSubmitInteraction) => void>
 
 interface CommandsComponents {
     buttons?: ComponentsButton,
@@ -19,8 +19,8 @@ interface CommandsComponents {
 }
 
 export type CommandType = ApplicationCommandData & CommandsComponents & {
-    run(props: CommandProps): any
-    autoComplete?: (interaction: AutocompleteInteraction) => any
+    run(props: CommandProps): void
+    autoComplete?: (interaction: AutocompleteInteraction) => void
 }
 
 export class Command {

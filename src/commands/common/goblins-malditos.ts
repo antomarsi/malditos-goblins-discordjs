@@ -1,11 +1,13 @@
-import { ActionRowBuilder, APIEmbedField, Application, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, DiscordjsError, DiscordjsErrorCodes, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, APIEmbedField, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, CacheType, Collection, CollectorFilter, ComponentType, DiscordjsError, DiscordjsErrorCodes, EmbedBuilder, ModalActionRowComponentBuilder, ModalBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Command, CommandProps } from "../../structs/types/Command";
 import { Goblin } from "../../engine/GoblinEngine";
 import { randomInt, Range } from "../../utils/math";
+import logger from "../../utils/logger";
+import { diceToEmoji } from "../../utils/dice";
 
 type runCommandFunc = (props: CommandProps) => Promise<void>
 
-const commandSobre: runCommandFunc = async ({ interaction, options }) => {
+const commandSobre: runCommandFunc = async ({ interaction }) => {
 
     const sobreEmbed = new EmbedBuilder()
         .setTitle("Você é bem bacana em querer saber mais sobre este bot.")
@@ -48,8 +50,23 @@ const commandSobre: runCommandFunc = async ({ interaction, options }) => {
 
 const runningCommands: string[] = []
 
+const commandMagia: runCommandFunc = async ({ interaction, options }) => {
+    const tipoMagia = options.getString("tipo-magia", true)
+
+    const magia = Goblin.getMagic(tipoMagia)
+
+    if (magia) {
+        const hits = ["0", "1", "2", "3+"]
+        const text = magia.values.map((v, index) => `- **${hits[index]} hit:** ${v}`).join("\n")
+        interaction.reply({
+            content: `### Magia de ${magia.emoji} ${magia.title}:\n${text}`,
+            ephemeral: true
+        })
+    }
+}
+
 const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
-    let fields: APIEmbedField[] = [
+    const fields: APIEmbedField[] = [
         { name: "Nome:", value: goblin.nome, inline: true },
         { name: "Ocupação:", value: goblin.ocupation.title, inline: true },
         { name: "Descritor:", value: goblin.descritor.title, inline: true },
@@ -78,7 +95,7 @@ const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
         ].map((v) => ({ name: `${v.icon} ${v.name}`, value: v.value.toString(), inline: true })),
         {
             name: "Técnicas:",
-            value: goblin.ocupation.skills.map<string>((v, index) => `**Level ${index + 1} - ${v.title}**: ${v.description}`).join("\n")
+            value: goblin.ocupation.skills.map<string>((v, index) => `- **Level ${index + 1} - ${v.title}**: ${v.description}`).join("\n")
         }
     ]
 
@@ -95,7 +112,7 @@ const createEmbbedFromGoblin = (goblin: Goblin): EmbedBuilder => {
         })
         fields.push({
             name: "Você é um bruxo, então só pra lembrar:",
-            value: "use o comando **/malditos-goblins roll-magia <tipo-magia> <dado-nocao>** para saber o resultado, boa sorte!"
+            value: "use o comando `/malditos-goblins roll-magia <tipo-magia> <dado-nocao>` para saber o resultado, boa sorte!"
         })
     }
 
@@ -138,7 +155,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
                 return i.user.id === interaction.user.id
             }
         }).catch(error => {
-            console.log(error)
+            logger.error(error)
             return null
         })
 
@@ -159,8 +176,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
     const equipOptions: StringSelectMenuOptionBuilder[] = ocupation.equipamentos.map<StringSelectMenuOptionBuilder>((v, index) => {
         const equipDescription = Goblin.getEquipsDescription(v)
         return new StringSelectMenuOptionBuilder({
-            label: equipDescription.title,
-            description: equipDescription.description,
+            label: equipDescription,
             value: index.toString()
         })
     })
@@ -173,6 +189,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             }).setOptions(equipOptions)
         ]
     })
+
 
     const weaponMsg = await interaction.followUp({
         content: `Seu goblin se chama **${goblinName}**, será um **${ocupation.title}**, selecione seu equipamento:`,
@@ -194,6 +211,62 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             return;
         } else {
             throw err
+        }
+    }
+
+    if (descritor.choose) {
+
+        const descritorSelectRow = new ActionRowBuilder<StringSelectMenuBuilder>({
+            components: [
+                new StringSelectMenuBuilder({
+                    customId: "descritor-select",
+                    placeholder: "Selecione um atributo",
+                }).setOptions([
+                    {
+                        emoji: '⚔️',
+                        label: 'Combate',
+                        value: "combate"
+                    },
+                    {
+                        emoji: '🏃',
+                        label: 'Habilidade',
+                        value: "habilidade"
+                    },
+                    {
+                        emoji: '❤️',
+                        label: 'Vitalidade',
+                        value: "vitalidade"
+                    },
+                    {
+                        emoji: '📚',
+                        label: 'Noção',
+                        value: "nocao"
+                    }
+                ])
+            ]
+        })
+
+        const descritorMsg = await interaction.followUp({
+            content: `Seu goblin é supimpa, escolha um atributo para ganhar +1:`,
+            components: [descritorSelectRow],
+            ephemeral: true,
+            fetchReply: true
+        })
+
+        let collectorDescritor
+        try {
+            collectorDescritor = await descritorMsg.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 30_000 });
+            const descritorSelect = collectorDescritor.values[0] as "combate" | "habilidade" | "nocao" | "vitalidade"
+            descritor.stats[descritorSelect] = 1
+            await collectorDescritor?.deleteReply()
+        } catch (err) {
+            if (err instanceof DiscordjsError && err.code == DiscordjsErrorCodes.InteractionCollectorError) {
+                console.error(`User ${interaction.user.id} didn't selected a atribute: ${err}`)
+                await collectorDescritor?.deleteReply()
+                return;
+            } else {
+                throw err
+            }
         }
     }
 
@@ -231,7 +304,6 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             } else {
                 throw err
             }
-        } finally {
         }
     }
 
@@ -249,13 +321,9 @@ const commandRoll: runCommandFunc = async ({ interaction, options }) => {
     if (!numeroDados || numeroDados <= 0) {
         throw new Error("Valor invalido pra jogar os dados")
     }
-
+    const dadosResultado = Range(1, numeroDados).map(() => diceToEmoji(randomInt(0, 5))).join(" ")
     interaction.reply({
-        content: `<@${interaction.user.id}> rolou ${numeroDados} dado(s) com o resultado:\n
-        Resultado: ${Range(1, numeroDados).map(_ => randomInt(1, 6)).reduce<string[]>((acc, cur) => {
-            acc.push(randomInt(1, 6).toString())
-            return acc
-        }, []).join(", ")}`
+        content: `<@${interaction.user.id}> rolou ${numeroDados}d6 com o resultado: ${dadosResultado}`
     })
 }
 
@@ -269,7 +337,7 @@ const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
     if (!dadoMagia) {
         throw new Error("Magia inválida");
     }
-    const dados = Range(1, numeroDados).map(_ => randomInt(1, 6))
+    const dados = Range(1, numeroDados).map(() => randomInt(1, 6))
 
     const hits = dados.reduce((acc, cur) => {
         return acc + (cur >= 4 ? 1 : 0);
@@ -279,7 +347,7 @@ const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
         throw new Error("Essa magia não existe, tente novamente")
     } else {
         interaction.reply({
-            content: `<@${interaction.user.id}> jogou **${numeroDados}** dado(s) (${dados.join(", ")}) com **${hits} acertos**, a magia de ${magia.title} resultou em:\n**${magia.description}**`
+            content: `<@${interaction.user.id}> rolou **${numeroDados}d6** com o resultado: ${dados.map(v => diceToEmoji(v - 1)).join(" ")}\n Obteve **${hits} acertos** e a magia de ${magia.title} resultou em:\n**${magia.description}**`
         })
     }
 
@@ -292,13 +360,13 @@ const commandEquips: runCommandFunc = async ({ interaction, options }) => {
     const tipoEquipamento = options.getString("tipo-equip", true)
 
     if (["armas", "protecao", "outros"].includes(tipoEquipamento)) {
-        let equips = Goblin.getAllEquipsByType(tipoEquipamento as "armas" | "protecao" | "outros")
+        const equips = Goblin.getAllEquipsByType(tipoEquipamento as "armas" | "protecao" | "outros")
         let text = equips.items.join("\n")
         if (equips.specials.length > 0) {
             text += `\n ------------------------- \n**Especiais:**\n${equips.specials.join("\n")}`
         }
         interaction.reply({
-            content: `**items do tipo ${tipoEquipamento}:**\n\n${text}\n`,
+            content: `### Items do tipo ${tipoEquipamento}:\n\n${text}`,
             ephemeral: true
         })
     } else {
@@ -365,6 +433,19 @@ export default new Command({
             ]
         },
         {
+            name: "magia",
+            description: "Mostra a lista de magias",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "tipo-magia",
+                    description: "Lista de magias",
+                    type: ApplicationCommandOptionType.String,
+                    choices: Goblin.getMagics().map(v => ({ name: v.title, value: v.value, }))
+                }
+            ]
+        },
+        {
             name: "equips",
             description: "Aqui você encontra todos equipamentos e qualquer outro que os goblins podem encontrar.",
             type: ApplicationCommandOptionType.Subcommand,
@@ -405,7 +486,6 @@ export default new Command({
                 if (runningCommands.includes(id)) {
                     await interaction.reply({ content: "Comando já está sendo executado.", ephemeral: true })
                 } else {
-
                     runningCommands.push(id)
                     try {
                         await commandCreateGoblin(props)
@@ -424,6 +504,9 @@ export default new Command({
             case "sobre":
                 await commandSobre(props)
                 break;
+            case "magia":
+                await commandMagia(props)
+                break
             case "roll":
                 await commandRoll(props)
                 break;
@@ -432,8 +515,9 @@ export default new Command({
                 break;
             case "equips":
                 await commandEquips(props)
+                break;
             default:
-                console.log("Nenhum commando selectionado")
+                logger.warn(`User <${interaction.user.id}> selected "${subCommand}" which is not a command.`)
                 break;
         }
     }

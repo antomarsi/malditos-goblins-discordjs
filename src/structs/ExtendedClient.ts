@@ -1,10 +1,12 @@
 import { ApplicationCommandDataResolvable, Client, ClientEvents, Collection, GatewayIntentBits, Partials } from "discord.js";
-import { Command, CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from "./types/Command";
-import * as path from "path";
-import * as fs from "fs";
-import { EventType } from "./types/Event";
-
-const fileCondition = (fileName: string) => fileName.endsWith(".ts") || fileName.endsWith(".js")
+import { CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from "./types/Command";
+import logger from "../utils/logger";
+import components from "../events/main/components";
+import ready from "../events/main/ready";
+import slash from "../events/main/slash";
+import { Event } from "./types/Event";
+import { Command } from "./types/Command";
+import goblinsMalditos from "../commands/common/goblins-malditos";
 
 export class ExtendClient extends Client {
 
@@ -28,48 +30,49 @@ export class ExtendClient extends Client {
 
     private registerCommands(commands: Array<ApplicationCommandDataResolvable>) {
         this.application?.commands.set(commands).then(() => {
-            console.log("✅ Slash command defined".green)
-        }).catch(e => console.log(`❌ An error occurred while trying to define Slash Commands: \n${e}`.red))
+            logger.info("✅ Slash command defined")
+        }).catch(e => logger.fatal(`❌ An error occurred while trying to define Slash Commands: \n${e}`))
     }
 
     private registerModules() {
-        const slashCommands: Array<ApplicationCommandDataResolvable> = new Array();
+        const slashCommands: Array<ApplicationCommandDataResolvable> = [];
 
-        const commandsPath = path.join(__dirname, "..", "commands")
+        const commands : Command[] = [
+            goblinsMalditos
+        ]
 
-        fs.readdirSync(commandsPath).forEach(local => {
-            fs.readdirSync(commandsPath + `/${local}/`).filter(fileCondition).forEach(async fileName => {
-                const command: CommandType = (await import(`../commands/${local}/${fileName}`))?.default
-                const { name, buttons, selects, modals } = command
+        commands.forEach(command => {
+            const { name, buttons, selects, modals } = command as CommandType
+            if (name) {
+                this.commands.set(name, command as CommandType)
+                slashCommands.push(command as CommandType)
+                if (buttons) buttons.forEach((run, key) => this.buttons.set(key, run))
+                if (selects) selects.forEach((run, key) => this.selects.set(key, run))
+                if (modals) modals.forEach((run, key) => this.modals.set(key, run))
+            }
+        });
 
-                if (name) {
-                    this.commands.set(name, command)
-                    slashCommands.push(command)
-                    if (buttons) buttons.forEach((run, key) => this.buttons.set(key, run))
-                    if (selects) selects.forEach((run, key) => this.selects.set(key, run))
-                    if (modals) modals.forEach((run, key) => this.modals.set(key, run))
-                }
-            })
-        })
 
 
 
         this.on("ready", () => this.registerCommands(slashCommands))
     }
     private registerEvents() {
-        const eventsPath = path.join(__dirname, "..", "events");
 
-        fs.readdirSync(eventsPath).forEach(local => {
-            fs.readdirSync(`${eventsPath}/${local}`).filter(fileCondition).forEach(async fileName => {
-                const { name, once, run }: EventType<keyof ClientEvents> = (await import(`../events/${local}/${fileName}`))?.default
-                try {
-                    if (name) (once) ? this.once(name, run) : this.on(name, run)
+        const events: Event<keyof ClientEvents>[] = [
+            components,
+            ready,
+            slash
+        ]
 
-                } catch (error) {
-                    console.log(`An erro occurred on event: ${name}: \n${error}`.red)
-                }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        events.forEach(({ name, once, run }:any) => {
+            try {
+                if (name) (once) ? this.once(name, run) : this.on(name, run)
 
-            })
-        })
+            } catch (error) {
+                logger.fatal(`An erro occurred on event: ${name}: \n${error}`)
+            }
+        });
     }
 }

@@ -12,17 +12,18 @@ interface Attributes {
     vitalidade: number
 }
 
-interface Skill {
-    title: string
-    description: string
-}
-
 interface Magic {
     type: string
     title: string
     emoji: string
     values: string[]
 }
+
+interface Skill {
+    title: string
+    description: string
+}
+
 interface EquipInv {
     type: string,
     value: string,
@@ -56,13 +57,13 @@ interface Other {
 
 type Equip = Weapon | Protection | Other
 
-function isWeapon(item: any): item is Weapon {
+function isWeapon(item: Equip | EquipInv): item is Weapon {
     return 'ataque' in item
 }
-function isProtection(item: any): item is Protection {
+function isProtection(item: Equip | EquipInv): item is Protection {
     return 'durabilidade' in item
 }
-function hasSpecial(item: any): item is Weapon | Protection {
+function hasSpecial(item: Equip | EquipInv): item is Weapon | Protection {
     return "special" in item
 }
 
@@ -114,25 +115,28 @@ export class Goblin {
     }
 
     private static getSpecialStr(spc: Special): string {
-        return `${spc.title}: ${spc.description}`
+        return `- **${spc.title}**: ${spc.description}`
     }
 
     public get equipamentos(): string {
         const equipObj = this.ocupation.equipamentos[this._equips].map(v => Goblin.getEquipInvDescription(v))
 
-        const result = equipObj.reduce((acc, cur) => {
-            acc.value = `${acc.value}${cur.value}\n`
+        const result = equipObj.reduce<{value: string[], special: Special[]}>((acc, cur) => {
+            acc.value.push(`- ${cur.value}`)
             if (cur.special) {
                 for (const special of cur.special) {
-                    if (!cur.special.find(v => v.title === special.title)) {
-                        cur.special.push(special)
+                    if (!acc.special.find(v => v.title === special.title)) {
+                        acc.special.push(special)
                     }
                 }
             }
-            return cur
-        }, { value: "", special: [] })
-
-        return `${result.value}\n**Especiais:**\n${result.special?.map(v => Goblin.getSpecialStr(v))?.join("\n")}`
+            return acc
+        }, { value: [], special: [] })
+        let text = result.value.join("\n")
+        if (result.special && result.special.length > 0) {
+            text += `\n**Especiais:**\n${result.special?.map(v => Goblin.getSpecialStr(v))?.join("\n")}`
+        }
+        return text
 
     }
 
@@ -150,13 +154,15 @@ export class Goblin {
     }
 
     public static getSpecial(name: "armas" | "protecao", title: string): Special | undefined {
-        let special = (equipamentos[name]?.specials || []).find((v) => v.title = title)
-
-        return special
+        return (equipamentos[name]?.specials || []).find((v) => v.title = title)
     }
 
     public static getMagics(): { title: string, value: string, emoji: string }[] {
         return magias.map(v => ({ title: v.title, value: v.type, emoji: v.emoji }))
+    }
+
+    public static getMagic(type: string) : Magic | undefined {
+        return magias.find(v => v.type === type)
     }
 
     public static getMagicDice(type: string, hits: number): {
@@ -168,32 +174,34 @@ export class Goblin {
             return undefined
         }
         if (hits < 3) {
-            return { title: magic.title, description: magic.value[hits - 1]}
+            return { title: magic.title, description: magic.values[hits - 1] }
 
         } else {
-            return { title: magic.title, description: magic.value[2]}
+            return { title: magic.title, description: magic.values[2] }
         }
     }
 
     public static getEquip(name: "armas" | "protecao" | "outros", title: string): Weapon | Protection | Other {
         switch (name) {
-            case "armas":
-                let arma = (equipamentos.armas?.values || []).find((v) => v.title == title)
+            case "armas": {
+                const arma = (equipamentos.armas?.values || []).find((v) => v.title == title)
 
                 return {
                     ...arma, special: arma?.special?.map(v => {
-                        let special = this.getSpecial(name, v.type)
+                        const special = this.getSpecial(name, v.type)
                         return special ? { ...special, qtd: v.qtd } as Special : undefined
                     }).filter(v => v != undefined)
                 } as Weapon
-            case "protecao":
-                let protecao = (equipamentos.protecao?.values || []).find((v) => v.title == title)
+            }
+            case "protecao": {
+                const protecao = (equipamentos.protecao?.values || []).find((v) => v.title == title)
                 return {
                     ...protecao, special: protecao?.special?.map(v => {
-                        let special = this.getSpecial(name, v.type)
+                        const special = this.getSpecial(name, v.type)
                         return special ? { ...special } as Special : undefined
                     }).filter(v => v != undefined)
                 } as Protection
+            }
             default:
                 return (equipamentos.outros?.values || []).find((v) => v.title == title) || { "title": title } as Other
         }
@@ -204,15 +212,15 @@ export class Goblin {
             const equip = Goblin.getEquip(type, v.title)
             return Goblin.getEquipTitle(equip)
         })
-        let specials : string[] = []
+        let specials: string[] = []
         if (type !== "outros") {
             specials = equipamentos[type].specials.map(v => `**${v.title}**: ${v.description}`)
         }
-        return {items, specials}
+        return { items, specials }
     }
 
-    private static getEquipTitle(equip: Equip, qtd?: number): string {
-        let title = `**${equip.title}**`
+    private static getEquipTitle(equip: Equip, qtd?: number, useList?: boolean): string {
+        let title = `${useList ? "- " : ""}**${equip.title}**`
         if (isWeapon(equip)) {
             title += ` (${equip.uso}, ${equip.ataque}, ${equip.bonus}${equip.special ? ", " + equip.special?.map(v => v.qtd ? `${v.title} [${v.qtd}]` : v.title).join(", ") : ""}}`
         } else if (isProtection(equip)) {
@@ -224,7 +232,7 @@ export class Goblin {
 
     private static getEquipInvDescription(equip: EquipInv): { value: string, special?: Special[] } {
         const equipValue = this.getEquip(equip.type as "armas" | "protecao" | "outros", equip.value)
-        const equipTitle = this.getEquipTitle(equipValue, equip.qtd)
+        const equipTitle = this.getEquipTitle(equipValue, equip.qtd, true)
         let special: Special[] = []
         if (hasSpecial(equipValue)) {
             special = equipValue.special!
@@ -235,27 +243,16 @@ export class Goblin {
         }
     }
 
-    public static getEquipsDescription(equips: EquipInv[]): { title: string, description: string } {
+    public static getEquipsDescription(equips: EquipInv[]): string {
         const equipamentos = equips.map((v) => {
-            let equip = this.getEquip(v.type as "armas" | "protecao" | "outros", v.value)
+            const equip = this.getEquip(v.type as "armas" | "protecao" | "outros", v.value)
             return { equip, qtd: v.qtd }
-        }).reduce<{ title: string[], description: string[] }>((acc, cur) => {
+        }).reduce<string[]>((acc, cur) => {
             const title = cur.qtd > 1 ? `${cur.qtd} ${cur.equip.title}` : cur.equip.title
-            acc.title.push(title)
-            if (hasSpecial(equips)) {
-                equips.special?.forEach(special => {
-                    const desc = `${special.title}: ${special.description}`
-                    if (!acc.description.includes(desc)) {
-                        acc.description.push(desc)
-                    }
-                });
-            }
+            acc.push(title)
             return acc
-        }, { title: [], description: [] })
-        return {
-            title: equipamentos.title.join(", "),
-            description: equipamentos.description.join("\n")
-        }
+        }, [])
+        return equipamentos.join(", ")
     }
 
     public static generateOcupation(): Ocupation {
@@ -264,16 +261,16 @@ export class Goblin {
     }
 
     public static generateDescritor(): Descritor {
-        let dice = randomInt(0, 5)
+        const dice = randomInt(0, 5)
         return ocupacoes.descritor[dice]
     }
 
     public static generateCharacteristic(): Characteristic {
         while (true) {
-            let dice = randomInt(0, 5)
-            let dice2 = randomInt(0, 5)
-            let value = `${dice}${dice2}`
-            let charac = caracteristicas.find(v => v.value == value)
+            const dice = randomInt(0, 5)
+            const dice2 = randomInt(0, 5)
+            const value = `${dice}${dice2}`
+            const charac = caracteristicas.find(v => v.value == value)
             if (charac && !charac?.reroll) {
                 return {
                     title: charac.title!,

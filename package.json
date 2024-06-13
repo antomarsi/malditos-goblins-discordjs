@@ -7,21 +7,26 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "start": "node ."
+    "start": "node  --enable-source-maps --experimental-specifier-resolution=node ./dist/index.js",
+    "lint": "eslint"
   },
   "engines": {
     "node": "18.x"
   },
   "dependencies": {
-    "colors": "^1.4.0",
     "discord.js": "^14.15.2",
     "dotenv": "^16.4.5",
-    "undici": "^5.0.0",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "tslog": "^4.9.3",
+    "undici": "^5.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.4.0",
     "@types/node": "^20.14.2",
+    "eslint": "9.x",
+    "globals": "^15.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.13.0"
   }
 }
