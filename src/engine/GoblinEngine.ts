@@ -63,6 +63,11 @@ function isWeapon(item: Equip | EquipInv): item is Weapon {
 function isProtection(item: Equip | EquipInv): item is Protection {
     return 'durabilidade' in item
 }
+
+function isOther(item: Equip | EquipInv): item is Other {
+    return !isWeapon(item) && !isProtection(item)
+}
+
 function hasSpecial(item: Equip | EquipInv): item is Weapon | Protection {
     return "special" in item
 }
@@ -148,16 +153,16 @@ export class Goblin {
     }
 
     public get combate(): number {
-        return this.ocupation.stats.combate + this.descritor.stats.combate;
+        return 2 + this.ocupation.stats.combate + this.descritor.stats.combate;
     }
     public get habilidade(): number {
-        return this.ocupation.stats.habilidade + this.descritor.stats.habilidade;
+        return 2 + this.ocupation.stats.habilidade + this.descritor.stats.habilidade;
     }
     public get nocao(): number {
-        return this.ocupation.stats.nocao + this.descritor.stats.nocao;
+        return 2 + this.ocupation.stats.nocao + this.descritor.stats.nocao;
     }
     public get vitalidade(): number {
-        return this.ocupation.stats.vitalidade + this.descritor.stats.vitalidade;
+        return 2 + this.ocupation.stats.vitalidade + this.descritor.stats.vitalidade;
     }
 
     public static getSpecial(name: "armas" | "protecao", title: string): Special | undefined {
@@ -181,8 +186,7 @@ export class Goblin {
             return undefined
         }
         if (hits < 3) {
-            return { title: magic.title, description: magic.values[hits - 1] }
-
+            return { title: magic.title, description: magic.values[hits] }
         } else {
             return { title: magic.title, description: magic.values[2] }
         }
@@ -214,7 +218,10 @@ export class Goblin {
         }
     }
 
-    public static getAllEquipsByType(type: "armas" | "protecao" | "outros") {
+    public static getAllEquipsByType(type: "armas" | "protecao" | "outros"): {
+        items: { title: string, description: string }[],
+        specials: string[]
+    } {
         const items = equipamentos[type].values.map(v => {
             const equip = Goblin.getEquip(type, v.title)
             return Goblin.getEquipTitle(equip)
@@ -226,15 +233,18 @@ export class Goblin {
         return { items, specials }
     }
 
-    private static getEquipTitle(equip: Equip, qtd?: number, useList?: boolean): string {
-        let title = `${useList ? "- " : ""}**${equip.title}**`
+    private static getEquipTitle(equip: Equip, qtd?: number, useList?: boolean): { title: string, description: string } {
+        const title = `${useList ? "- " : ""}**${equip.title}**`
+        let description = ""
         if (isWeapon(equip)) {
-            title += ` (${equip.uso}, ${equip.ataque}, ${equip.bonus}${equip.special ? ", " + equip.special?.map(v => v.qtd ? `${v.title} [${v.qtd}]` : v.title).join(", ") : ""}}`
+            description += ` (${equip.uso}, ${equip.ataque}, ${equip.bonus}${equip.special ? ", " + equip.special?.map(v => v.qtd ? `${v.title} [${v.qtd}]` : v.title).join(", ") : ""}}`
         } else if (isProtection(equip)) {
-            title += ` (${equip.uso}, durab. ${equip.durabilidade}${equip.special ? ", " + equip.special?.map(v => v.title).join(", ") : ""})`
+            description += ` (${equip.uso}, durab. ${equip.durabilidade}${equip.special ? ", " + equip.special?.map(v => v.title).join(", ") : ""})`
+        } else {
+            description = equip.description as string
         }
 
-        return (qtd && qtd > 1 ? `${qtd}x` : "") + title
+        return { title: (qtd && qtd > 1 ? `${qtd}x` : "") + title, description }
     }
 
     private static getEquipInvDescription(equip: EquipInv): { value: string, special?: Special[] } {
@@ -245,7 +255,7 @@ export class Goblin {
             special = equipValue.special!
         }
         return {
-            value: equipTitle,
+            value: `${equipTitle.title}: ${equipTitle.description}`,
             special: special
         }
     }

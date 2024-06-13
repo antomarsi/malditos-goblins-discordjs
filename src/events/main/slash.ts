@@ -1,6 +1,7 @@
 import { CommandInteractionOptionResolver, Events } from "discord.js";
 import { client } from "../..";
 import { Event } from "../../structs/types/Event";
+import logger from "../../utils/logger";
 
 
 export default new Event({
@@ -25,7 +26,8 @@ export default new Event({
                     options
                 })
             } catch (error) {
-                console.error(error)
+                console.log(error)
+                logger.error(error)
             }
             return
         }

@@ -160,7 +160,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         })
 
         if (!modalInteraction) {
-            console.error("Você não informou um nome no periodo de 30 segundos, tente novamente.")
+            logger.error("Você não informou um nome no periodo de 30 segundos, tente novamente.")
             return;
         }
         goblinName = modalInteraction.fields.getTextInputValue("goblin-name")
@@ -210,7 +210,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
         await collectorWeapon.deleteReply()
     } catch (err) {
         if (err instanceof DiscordjsError && err.code == DiscordjsErrorCodes.InteractionCollectorError) {
-            console.error(`User ${interaction.user.id} didn't selected a weapon: ${err}`)
+            logger.error(`User ${interaction.user.id} didn't selected a weapon: ${err}`)
             await collectorWeapon?.deleteReply()
             return;
         } else {
@@ -265,7 +265,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             await collectorDescritor?.deleteReply()
         } catch (err) {
             if (err instanceof DiscordjsError && err.code == DiscordjsErrorCodes.InteractionCollectorError) {
-                console.error(`User ${interaction.user.id} didn't selected a atribute: ${err}`)
+                logger.error(`User ${interaction.user.id} didn't selected a atribute: ${err}`)
                 await collectorDescritor?.deleteReply()
                 return;
             } else {
@@ -302,7 +302,7 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
             magics = collectorMagic.values
         } catch (err) {
             if (err instanceof DiscordjsError && err.code == DiscordjsErrorCodes.InteractionCollectorError) {
-                console.error(`User ${interaction.user.id} didn't selected a weapon: ${err}`)
+                logger.error(`User ${interaction.user.id} didn't selected a weapon: ${err}`)
                 await magicMsg.delete()
                 return;
             } else {
@@ -323,7 +323,11 @@ const commandCreateGoblin: runCommandFunc = async ({ interaction, options }) => 
 const commandRoll: runCommandFunc = async ({ interaction, options }) => {
     const numeroDados = options.getInteger("dados")
     if (!numeroDados || numeroDados <= 0) {
-        throw new Error("Valor invalido pra jogar os dados")
+        interaction.reply({
+            content: `Cara, não dá pra jogar dado negativo ou nenhum dado, tente novamente`,
+            ephemeral: true
+        })
+        return;
     }
     const dadosResultado = Range(1, numeroDados).map(() => diceToEmoji(randomInt(0, 5))).join(" ")
     interaction.reply({
@@ -334,21 +338,33 @@ const commandRoll: runCommandFunc = async ({ interaction, options }) => {
 const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
     const numeroDados = options.getInteger("dado-nocao")
     if (!numeroDados || numeroDados <= 0) {
-        throw new Error("Valor invalido pra jogar os dados")
+        interaction.reply({
+            content: `Cara, não dá pra jogar dado negativo ou nenhum dado, tente novamente`,
+            ephemeral: true
+        })
+        return;
     }
 
     const dadoMagia = options.getString("tipo-magia")
     if (!dadoMagia) {
-        throw new Error("Magia inválida");
+        interaction.reply({
+            content: `Informe uma magia`,
+            ephemeral: true
+        })
+        return;
     }
     const dados = Range(1, numeroDados).map(() => randomInt(1, 6))
 
     const hits = dados.reduce((acc, cur) => {
         return acc + (cur >= 4 ? 1 : 0);
     }, 0)
-    const magia = Goblin.getMagicDice(dadoMagia, numeroDados)
+    const magia = Goblin.getMagicDice(dadoMagia, hits)
     if (magia == undefined) {
-        throw new Error("Essa magia não existe, tente novamente")
+        interaction.reply({
+            content: `Essa magia não existe, tente novamente`,
+            ephemeral: true
+        })
+        return;
     } else {
         interaction.reply({
             content: `<@${interaction.user.id}> rolou **${numeroDados}d6** com o resultado: ${dados.map(v => diceToEmoji(v - 1)).join(" ")}\n Obteve **${hits} acertos** e a magia de ${magia.title} resultou em:\n**${magia.description}**`
@@ -362,15 +378,33 @@ const commandRollMagia: runCommandFunc = async ({ interaction, options }) => {
 
 const commandEquips: runCommandFunc = async ({ interaction, options }) => {
     const tipoEquipamento = options.getString("tipo-equip", true)
+    if (!tipoEquipamento) {
+        interaction.reply({
+            content: `Tipo de equipamento inválido`,
+            ephemeral: true
+        })
+        return
+    }
+
 
     if (["armas", "protecao", "outros"].includes(tipoEquipamento)) {
+
         const equips = Goblin.getAllEquipsByType(tipoEquipamento as "armas" | "protecao" | "outros")
-        let text = equips.items.join("\n")
-        if (equips.specials.length > 0) {
-            text += `\n ------------------------- \n**Especiais:**\n${equips.specials.join("\n")}`
+        const equipsFields = equips.items.map(v => ({ name: v.title, value: v.description }))
+
+        const equipEmbed = new EmbedBuilder()
+            .setTitle("Equipamentos:")
+            .addFields(equipsFields)
+
+        if (equips.specials && equips.specials.length > 0) {
+            equipEmbed.addFields({
+                name: "Especiais",
+                value: equips.specials.map(v => `- ${v}`).join("\n")
+            })
         }
+
         interaction.reply({
-            content: `### Items do tipo ${tipoEquipamento}:\n\n${text}`,
+            embeds: [equipEmbed],
             ephemeral: true
         })
     } else {
@@ -394,7 +428,8 @@ export default new Command({
                 {
                     name: "nome",
                     description: "Nome do goblin (Opcional)",
-                    type: ApplicationCommandOptionType.String
+                    type: ApplicationCommandOptionType.String,
+                    max_length: 32
                 }
             ]
         },
@@ -412,7 +447,8 @@ export default new Command({
                     name: "dados",
                     description: "Número de dados",
                     type: ApplicationCommandOptionType.Integer,
-                    required: true
+                    required: true,
+                    minValue: 1
                 }
             ]
         },
@@ -432,7 +468,8 @@ export default new Command({
                     name: "dado-nocao",
                     description: "O seu valor de noção",
                     type: ApplicationCommandOptionType.Integer,
-                    required: true
+                    required: true,
+                    minValue: 1
                 },
             ]
         },
@@ -445,6 +482,7 @@ export default new Command({
                     name: "tipo-magia",
                     description: "Lista de magias",
                     type: ApplicationCommandOptionType.String,
+                    required: true,
                     choices: Goblin.getMagics().map(v => ({ name: v.title, value: v.value, }))
                 }
             ]
@@ -458,10 +496,11 @@ export default new Command({
                     name: "tipo-equip",
                     description: "Lista de itens diversos",
                     type: ApplicationCommandOptionType.String,
+                    required: true,
                     choices: [
                         { name: "Armas", value: "armas" },
                         { name: "Proteção", value: "protecao" },
-                        { name: "Outros", value: "Outros" },
+                        { name: "Outros", value: "outros" },
                     ]
                 }
             ]
@@ -494,7 +533,7 @@ export default new Command({
                     try {
                         await commandCreateGoblin(props)
                     } catch (error) {
-                        console.error(error)
+                        logger.error(error)
                         if (interaction.replied) {
                             await interaction.editReply({ content: "Algum erro ocorreu, mals" })
                         } else if (!interaction.replied) {
