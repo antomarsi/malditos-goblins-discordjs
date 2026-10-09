@@ -98,7 +98,10 @@ This starts `wrangler dev`, serving the Worker locally (default `http://localhos
 
 ### Exposing it to Discord with ngrok
 
-Discord needs a public HTTPS URL to send interactions to, so tunnel your local server:
+Discord needs a public HTTPS URL to send interactions to, so tunnel your local server. This needs the
+[ngrok CLI](https://ngrok.com/download) installed separately (it's not an npm dependency — the old `ngrok` npm
+package was an unmaintained wrapper around it, pulled in several vulnerable transitive dependencies, and added
+nothing `npm run ngrok` actually needs beyond having `ngrok` itself on your `PATH`):
 
 ```
 npm run ngrok

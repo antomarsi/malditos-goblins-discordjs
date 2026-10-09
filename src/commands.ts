@@ -23,7 +23,7 @@ const tipoEquipChoices = [
  * the interaction payload it receives).
  */
 export const GOBLIN_COMMAND: RESTPostAPIApplicationCommandsJSONBody = {
-  name: "goblin",
+  name: "malditos-goblins",
   description: "Gerenciador do bot Malditos Goblins",
   type: ApplicationCommandType.ChatInput,
   dm_permission: false,
@@ -57,6 +57,9 @@ export const GOBLIN_COMMAND: RESTPostAPIApplicationCommandsJSONBody = {
           type: ApplicationCommandOptionType.Integer,
           required: true,
           min_value: 1,
+          // Above this, the result text starts risking Discord's 2000-char
+          // message limit — and no goblin stat gets anywhere near this many.
+          max_value: 10,
         },
       ],
     },
@@ -78,6 +81,7 @@ export const GOBLIN_COMMAND: RESTPostAPIApplicationCommandsJSONBody = {
           type: ApplicationCommandOptionType.Integer,
           required: true,
           min_value: 1,
+          max_value: 10,
         },
       ],
     },

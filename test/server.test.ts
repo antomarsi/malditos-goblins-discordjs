@@ -123,10 +123,24 @@ describe("server", () => {
   describe("/goblin criar wizard", () => {
     let verifyStub: sinon.SinonStub;
     let fetchStub: sinon.SinonStub;
+    // finalizeGoblin queues the public-reveal POST via ctx.waitUntil instead
+    // of awaiting it inline (so it doesn't block Discord's 3s response
+    // deadline) — the real runtime awaits those before the invocation ends,
+    // so tests stand in for that by collecting and awaiting them manually.
+    let waitUntilPromises: Promise<unknown>[];
+    const ctx = {
+      waitUntil: (p: Promise<unknown>) => waitUntilPromises.push(p),
+    };
+    const fetchAndFlush = async (request: ReturnType<typeof postRequest>) => {
+      const response = await server.fetch(request, env, ctx);
+      await Promise.all(waitUntilPromises);
+      return response;
+    };
 
     beforeEach(() => {
       verifyStub = sinon.stub(server, "verifyDiscordRequest");
       fetchStub = sinon.stub(globalThis, "fetch").resolves(new Response("{}"));
+      waitUntilPromises = [];
     });
 
     afterEach(() => {
@@ -174,9 +188,9 @@ describe("server", () => {
       stubInteraction(
         componentInteraction(equipCustomId(criarResponse), ["0"]),
       );
-      const finalResponse = await server
-        .fetch(postRequest({}), env)
-        .then((r) => r.json());
+      const finalResponse = await fetchAndFlush(postRequest({})).then((r) =>
+        r.json(),
+      );
 
       expect(finalResponse.type).to.equal(
         InteractionResponseType.UPDATE_MESSAGE,
@@ -222,7 +236,7 @@ describe("server", () => {
       stubInteraction(
         componentInteraction(equipCustomId(attrStepResponse), ["combate"]),
       );
-      await server.fetch(postRequest({}), env);
+      await fetchAndFlush(postRequest({}));
       const [, init] = fetchStub.firstCall.args;
       const posted = JSON.parse(init.body);
       // base 2 + ocupação Mercenário combate(+1) + Supimpa bonus(+1) = 4
@@ -262,7 +276,7 @@ describe("server", () => {
           "cura",
         ]),
       );
-      await server.fetch(postRequest({}), env);
+      await fetchAndFlush(postRequest({}));
       const [, init] = fetchStub.firstCall.args;
       const posted = JSON.parse(init.body);
       expect(

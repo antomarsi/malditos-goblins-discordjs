@@ -305,19 +305,32 @@ async function postPublicReveal(
   embed: ReturnType<typeof goblinSheetEmbed>,
 ) {
   const url = `https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}`;
-  await fetch(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({
-      content: `<@${userId(interaction)}> criou o seguinte goblin:`,
-      embeds: [embed],
-    }),
-  });
+  // This runs detached via ctx.waitUntil (see finalizeGoblin), so nothing
+  // downstream ever sees a failure here — log it so it's at least visible
+  // in `wrangler tail`, instead of a goblin silently never getting posted.
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        content: `<@${userId(interaction)}> criou o seguinte goblin:`,
+        embeds: [embed],
+      }),
+    });
+    if (!response.ok) {
+      console.error(
+        `postPublicReveal failed: ${response.status} ${response.statusText} — ${await response.text()}`,
+      );
+    }
+  } catch (error) {
+    console.error("postPublicReveal threw:", error);
+  }
 }
 
 async function finalizeGoblin(
   interaction: APIMessageComponentInteraction,
   state: ReturnType<typeof decodeCreationState>["state"],
+  ctx: ExecutionContext,
   magiaTypes?: string[],
 ) {
   const ocupacao = ocupacaoByIndex(state.ocupacaoIndex);
@@ -345,7 +358,11 @@ async function finalizeGoblin(
     magias,
   });
 
-  await postPublicReveal(interaction, sheet);
+  // Discord's 3-second response deadline doesn't wait for this extra network
+  // hop — queue it to run after we respond instead of blocking on it. (This
+  // is what was turning local "criar" finishes into ~5s "didn't respond" in
+  // Discord: the fetch is slow enough on its own to blow the deadline.)
+  ctx.waitUntil(postPublicReveal(interaction, sheet));
 
   return respond({
     type: InteractionResponseType.UpdateMessage,
@@ -357,7 +374,10 @@ async function finalizeGoblin(
   });
 }
 
-async function handleComponent(interaction: APIMessageComponentInteraction) {
+async function handleComponent(
+  interaction: APIMessageComponentInteraction,
+  ctx: ExecutionContext,
+) {
   const { step, state } = decodeCreationState(interaction.data.custom_id);
   const values = "values" in interaction.data ? interaction.data.values : [];
 
@@ -427,7 +447,7 @@ async function handleComponent(interaction: APIMessageComponentInteraction) {
       });
     }
 
-    return finalizeGoblin(interaction, nextState);
+    return finalizeGoblin(interaction, nextState, ctx);
   }
 
   if (step === "atributo") {
@@ -463,11 +483,11 @@ async function handleComponent(interaction: APIMessageComponentInteraction) {
       });
     }
 
-    return finalizeGoblin(interaction, nextState);
+    return finalizeGoblin(interaction, nextState, ctx);
   }
 
   // step === 'magia'
-  return finalizeGoblin(interaction, state, values);
+  return finalizeGoblin(interaction, state, ctx, values);
 }
 
 // --- routing ------------------------------------------------------------------
@@ -480,7 +500,7 @@ router.get(
     new Response(`👋 ${env.DISCORD_APPLICATION_ID}`),
 );
 
-router.post("/", async (request: IRequest, env: Env) => {
+router.post("/", async (request: IRequest, env: Env, ctx: ExecutionContext) => {
   // Goes through the exported `server` object, not the local function
   // directly, so tests can stub signature verification without a real key.
   const { isValid, interaction } = await server.verifyDiscordRequest(
@@ -497,7 +517,7 @@ router.post("/", async (request: IRequest, env: Env) => {
     return handleCommand(interaction);
   }
   if (interaction.type === InteractionType.MessageComponent) {
-    return handleComponent(interaction as APIMessageComponentInteraction);
+    return handleComponent(interaction as APIMessageComponentInteraction, ctx);
   }
 
   return new JsonResponse({ error: "Unknown Type" }, { status: 400 });
