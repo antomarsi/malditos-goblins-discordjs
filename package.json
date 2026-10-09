@@ -2,31 +2,47 @@
   "name": "malditos_goblins_discordjs",
   "version": "2.0.0",
   "description": "A Malditos goblins Bot",
-  "main": "dist/index.js",
-  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "main": "src/server.ts",
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
-    "start": "node  --enable-source-maps --experimental-specifier-resolution=node ./dist/index.js",
-    "lint": "eslint"
+    "start": "wrangler dev",
+    "ngrok": "ngrok http 8787",
+    "test": "c8 mocha",
+    "typecheck": "tsc --noEmit",
+    "fix": "eslint --fix .",
+    "lint": "eslint .",
+    "register": "tsx src/register.ts",
+    "publish": "wrangler deploy"
   },
-  "engines": {
-    "node": "18.x"
-  },
+  "keywords": [],
+  "author": "Antonio Marco da Silva",
+  "license": "MIT",
   "dependencies": {
-    "discord.js": "^14.15.2",
-    "dotenv": "^16.4.5",
-    "fs": "0.0.1-security",
-    "tslog": "^4.9.3",
-    "undici": "^5.0.0"
+    "discord-api-types": "^0.38.56",
+    "discord-interactions": "^4.0.0",
+    "itty-router": "^5.0.9"
   },
   "devDependencies": {
-    "@eslint/js": "^9.4.0",
-    "@types/node": "^20.14.2",
-    "eslint": "9.x",
-    "globals": "^15.4.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.13.0"
+    "@cloudflare/workers-types": "^5.20261009.1",
+    "@eslint/js": "^9.1.1",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.6.4",
+    "@types/sinon": "^22.0.0",
+    "c8": "^10.1.2",
+    "chai": "^5.0.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "globals": "^16.0.0",
+    "mocha": "^12.0.3",
+    "prettier": "^3.2.5",
+    "sinon": "^21.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "wrangler": "^4.149.0"
   }
 }
