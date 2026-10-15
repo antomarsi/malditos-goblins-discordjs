@@ -23,5 +23,26 @@ export default tseslint.config(
       "no-undef": "off",
     },
   },
+  {
+    // A runtime import from discord-api-types pulls its whole CommonJS bundle
+    // (~200 KB) into the worker — see src/utils/discord.ts.
+    files: ["src/**/*.ts"],
+    ignores: ["src/utils/discord.ts"],
+    rules: {
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "discord-api-types/v10",
+              message:
+                "Use `import type` here; take runtime constants from src/utils/discord.ts.",
+              allowTypeImports: true,
+            },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
 );

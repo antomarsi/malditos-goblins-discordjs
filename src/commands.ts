@@ -1,8 +1,8 @@
+import type { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  type RESTPostAPIApplicationCommandsJSONBody,
-} from "discord-api-types/v10";
+} from "./utils/discord.js";
 import { magiaChoices } from "./engine/goblin.js";
 
 const tipoMagiaChoices = magiaChoices().map((m) => ({

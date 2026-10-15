@@ -11,20 +11,23 @@ import { AutoRouter, type IRequest } from "itty-router";
 // Only verifyKey comes from discord-interactions — its enums are a separate,
 // structurally-incompatible copy of the ones below, so mixing the two causes
 // confusing "not assignable" errors. discord-api-types is the single source
-// of truth for every wire-format type and constant here.
+// of truth for every wire-format type, and ./utils/discord.js for the few
+// runtime constants (see that file for why they aren't imported from it).
 import { verifyKey } from "discord-interactions";
+import type {
+  APIApplicationCommandInteractionDataSubcommandOption,
+  APIChatInputApplicationCommandInteractionData,
+  APIInteraction,
+  APIInteractionResponse,
+  APIMessageComponentInteraction,
+} from "discord-api-types/v10";
 import {
   ApplicationCommandOptionType,
   ComponentType,
   InteractionResponseType,
   InteractionType,
   MessageFlags,
-  type APIApplicationCommandInteractionDataSubcommandOption,
-  type APIChatInputApplicationCommandInteractionData,
-  type APIInteraction,
-  type APIInteractionResponse,
-  type APIMessageComponentInteraction,
-} from "discord-api-types/v10";
+} from "./utils/discord.js";
 import { diceToEmoji } from "./utils/dice.js";
 import { randomInt, range } from "./utils/math.js";
 import {

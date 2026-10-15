@@ -1,14 +1,13 @@
-import {
-  ButtonStyle,
-  ComponentType,
-  type APIActionRowComponent,
-  type APIButtonComponentWithURL,
-  type APIComponentInMessageActionRow,
-  type APIEmbed,
-  type APIEmbedField,
-  type APISelectMenuOption,
-  type APIStringSelectComponent,
+import type {
+  APIActionRowComponent,
+  APIButtonComponentWithURL,
+  APIComponentInMessageActionRow,
+  APIEmbed,
+  APIEmbedField,
+  APISelectMenuOption,
+  APIStringSelectComponent,
 } from "discord-api-types/v10";
+import { ButtonStyle, ComponentType } from "./utils/discord.js";
 import type {
   Attributes,
   Caracteristica,
